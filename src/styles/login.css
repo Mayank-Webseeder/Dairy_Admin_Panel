@@ -1,0 +1,642 @@
+/* pages/login/login.css */
+.login {
+  display: flex;
+  width: 100vw; /* Explicitly 100% of viewport width */
+  height: 100vh; /* Explicitly 100% of viewport height */
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5; /* Example background color for the whole page */
+  overflow: hidden; /* Prevents scrollbars on the main login container */
+}
+
+.login.dark {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+
+.login.dark .loginContainer {
+  background: #2d3748;
+}
+
+.login.dark .formSection .formContent .header h1 {
+  color: white;
+}
+
+.login.dark .formSection .formContent .header p {
+  color: #cbd5e0;
+}
+
+.login.dark .formSection .formContent .inputGroup label {
+  color: white;
+}
+
+.login.dark .formSection .formContent .inputGroup input {
+  background: #4a5568;
+  border-color: #4a5568;
+  color: white;
+}
+
+.login.dark .formSection .formContent .inputGroup input:focus {
+  border-color: #667eea;
+}
+
+.login.dark .formSection .formContent .inputGroup input::placeholder {
+  color: #a0aec0;
+}
+
+.login.dark .formSection .formContent .formOptions .checkbox span {
+  color: #cbd5e0;
+}
+
+.login.dark .formSection .formContent .signupRedirect p {
+  color: #cbd5e0;
+}
+
+.login.dark .formSection .formContent .demoCredentials h4,
+.login.dark .formSection .formContent .demoCredentials p {
+  color: #cbd5e0;
+}
+
+.login.dark .formSection .formContent .securityFooter p {
+  color: #cbd5e0;
+}
+
+.loginContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%; /* Take full width of its parent (.login) */
+  height: 100%; /* Take full height of its parent (.login) */
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  gap: 0;
+}
+
+/* Left Side - Illustration Section */
+.illustrationSection {
+  flex: 1; /* Takes 1 part of available space */
+  background-color: #333; /* Fallback background color */
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 16px; /* Container Padding: p-4 (16px) */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px; /* Gap Between Items: gap-4 (16px) */
+  min-height: 100%; /* Ensure it takes full height of its parent */
+  position: relative; /* Needed for absolute positioning of slideshow elements */
+  overflow: hidden; /* Hide overflowing parts of images during transition */
+}
+
+/* Slideshow specific styles for the illustrationSection */
+.illustrationSection .slide-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out; /* Smooth fade transition */
+  z-index: 1; /* Below content */
+}
+
+.illustrationSection .slide-background.active {
+  opacity: 1;
+}
+
+.illustrationSection .slideshow-content {
+  position: relative; /* Position content above the background images */
+  z-index: 2; /* Above background images */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; /* Align text to the left */
+  height: 100%; /* Take full height of illustrationSection */
+  width: 100%; /* Take full width */
+  padding: 16px; /* Ensure content has padding */
+  box-sizing: border-box; /* Include padding in width/height */
+  background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1)); /* Subtle overlay for text readability */
+}
+
+.illustrationSection .slideshow-content .logo h1 {
+  font-size: 24px; /* Adjust logo text size */
+  font-weight: bold;
+  margin-bottom: 32px; /* More space below logo */
+  color: white;
+}
+
+.illustrationSection .slideshow-content .welcomeMessage {
+  margin-bottom: 32px; /* Space below main text */
+}
+
+.illustrationSection .slideshow-content .slide-title {
+  font-size: 36px; /* Larger font for main title */
+  font-weight: bold;
+  color: white;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.illustrationSection .slideshow-content .slide-subtitle {
+  font-size: 18px; /* Subtitle font size */
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.illustrationSection .slideshow-content .features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Gap between feature blocks */
+  margin-top: 32px; /* Space above features */
+}
+
+.illustrationSection .slideshow-content .feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px; /* Gap between icon and text */
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.15); /* Slightly transparent background for features */
+  backdrop-filter: blur(5px); /* Frosted glass effect */
+  color: white;
+}
+
+.illustrationSection .slideshow-content .featureIcon {
+  font-size: 20px; /* Larger icons for features */
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.illustrationSection .slideshow-content .featureContent h4 {
+  font-size: 16px; /* Feature heading font size */
+  margin: 0;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.illustrationSection .slideshow-content .featureContent p {
+  font-size: 14px; /* Feature description font size */
+  margin: 0;
+  line-height: 1.4;
+  color: #e0e0e0;
+}
+
+.logo {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.welcomeMessage {
+  margin-bottom: 60px;
+}
+
+.welcomeMessage h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.welcomeMessage p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.features {
+  margin-top: 20px;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.featureIcon {
+  font-size: 2rem;
+  margin-right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  border-radius: 12px;
+  min-width: 60px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.featureContent h4 {
+  font-size: 1.3rem;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.featureContent p {
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.formSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.formContent {
+  width: 100%;
+  max-width: 400px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 0; /* Let formInnerContent's gap handle spacing below header */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers logo, h1, p horizontally */
+  gap: 8px; /* Gap between logo, h1, and p */
+}
+
+.header h1 {
+  font-size: 36px; /* Keep this font size as per instruction */
+  font-weight: 900;
+  color: black;
+  margin: 0;
+}
+
+.header p {
+  font-size: 16px; /* Adjusted subtitle font size */
+  color: #555; /* Slightly softer color for subtitle */
+  margin: 0;
+}
+
+.successMessage {
+  background: #c6f6d5;
+  color: #2f855a;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.errorMessage {
+  background: #fed7d7;
+  color: #c53030;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.inputGroup {
+  margin-bottom: 25px;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px; /* Labels */
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.inputGroup input::placeholder {
+  font-size: 14px; /* Placeholder text */
+  color: #888;
+}
+
+.formOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox input {
+  margin-right: 8px;
+}
+
+.checkbox span {
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.forgotPassword {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.loginButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.loginButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.signupRedirect {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.signupRedirect p {
+  color: #718096;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.demoCredentials {
+  background: #f7fafc;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.demoCredentials h4 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.demoCredentials p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.demoCredentials strong {
+  color: #2d3748;
+}
+
+.securityFooter {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.securityFooter p {
+  color: #718096;
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login {
+    height: auto;
+    min-height: 100vh;
+    padding: 10px;
+    align-items: flex-start;
+  }
+  
+  .loginContainer {
+    flex-direction: column;
+    height: auto;
+    margin: 20px 0;
+  }
+  
+  .illustrationSection {
+    padding: 40px 20px;
+    order: 1;
+  }
+  
+  .logo {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-bottom: 30px;
+  }
+  
+  .logo h1 {
+    font-size: 1.8rem;
+  }
+  
+  .welcomeMessage {
+    margin-bottom: 40px;
+  }
+  
+  .welcomeMessage h2 {
+    font-size: 2rem;
+  }
+  
+  .welcomeMessage p {
+    font-size: 1.1rem;
+  }
+  
+  .feature {
+    margin-bottom: 30px;
+  }
+  
+  .featureIcon {
+    font-size: 1.8rem;
+    min-width: 55px;
+    padding: 10px;
+  }
+  
+  .featureContent h4 {
+    font-size: 1.2rem;
+  }
+  
+  .formSection {
+    padding: 30px 20px;
+    order: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginContainer .illustrationSection {
+    padding: 30px 15px;
+  }
+  
+  .logo h1 {
+    font-size: 1.6rem;
+  }
+  
+  .welcomeMessage h2 {
+    font-size: 1.8rem;
+  }
+  
+  .welcomeMessage p {
+    font-size: 1rem;
+  }
+  
+  .featureIcon {
+    font-size: 1.6rem;
+    min-width: 50px;
+    padding: 8px;
+    margin-right: 15px;
+  }
+  
+  .featureContent h4 {
+    font-size: 1.1rem;
+  }
+  
+  .featureContent p {
+    font-size: 0.9rem;
+  }
+  
+  .formSection {
+    padding: 20px 15px;
+  }
+  
+  .header {
+    margin-bottom: 30px;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+}
+
+.login-logo {
+  width: 120px; /* Made a little smaller from 60px */
+  height: 120px; /* Made a little smaller from 60px */
+  object-fit: contain;
+  margin-bottom: 0; /* Let the header's gap handle spacing */
+}
+
+/* Adjust header spacing and alignment */
+.formSection .header {
+  text-align: center;
+  margin-bottom: 0; /* Let formInnerContent's gap handle spacing below header */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers logo, h1, p horizontally */
+  gap: 8px; /* Gap between logo, h1, and p */
+}
+
+.formSection .header h1 {
+  font-size: 36px; /* Keep this font size as per instruction */
+  font-weight: 900;
+  color: black;
+  margin: 0;
+}
+
+.formSection .header p {
+  font-size: 16px; /* Adjusted subtitle font size */
+  color: #555; /* Slightly softer color for subtitle */
+  margin: 0;
+}
+
+/* General font size adjustments for other elements */
+.inputGroup label {
+  font-size: 14px; /* Labels */
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.inputGroup input::placeholder {
+  font-size: 14px; /* Placeholder text */
+  color: #888;
+}
+
+.formOptions label span, .formOptions a {
+  font-size: 14px; /* "Remember me" and "Forgot password?" text */
+}
+
+.signupRedirect p, .securityFooter p {
+  font-size: 14px; /* Footer text */
+}

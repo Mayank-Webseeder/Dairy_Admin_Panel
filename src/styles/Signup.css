@@ -1,0 +1,435 @@
+/* signup.css */
+.signup {
+  display: flex;
+  min-height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+  font-size: 12px;
+  overflow: hidden; /* Prevents scrollbars on the main signup container */
+}
+
+.signup.dark {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+
+.signup.dark .signupContainer {
+  background: #2d3748;
+  color: white;
+}
+
+.signup.dark .formSection .header h1 {
+  color: white;
+}
+
+.signup.dark .formSection .header p {
+  color: #cbd5e0;
+}
+
+.signup.dark .formSection .inputGroup label {
+  color: white;
+}
+
+.signup.dark .formSection .inputGroup input,
+.signup.dark .formSection .inputGroup select {
+  background: #4a5568;
+  border-color: #4a5568;
+  color: white;
+}
+
+.signup.dark .formSection .inputGroup input:focus,
+.signup.dark .formSection .inputGroup select:focus {
+  border-color: #667eea;
+}
+
+.signup.dark .formSection .inputGroup input::placeholder,
+.signup.dark .formSection .inputGroup select::placeholder {
+  color: #a0aec0;
+}
+
+.signup.dark .formSection .loginRedirect p {
+  color: #cbd5e0;
+}
+
+.signupContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%; /* Take full height of its parent (.signup) */
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+  background-color: white;
+}
+
+/* Left Side - Illustration Section */
+.illustrationSection {
+  flex: 1;
+  background-color: #6439ff;
+  color: white;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  min-height: 100%; /* Ensure it takes full height */
+  position: relative; /* Needed for absolute positioning of slideshow elements */
+  overflow: hidden; /* Hide overflowing parts of images during transition */
+}
+
+/* Right Side - Form Section */
+.formSection {
+  flex: 1;
+  background-color: white;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* This defines the scrollable viewport */
+  box-sizing: border-box;
+  overflow-y: auto; /* Scrollbar will appear here, at the corner */
+  align-items: center; /* ADDED: Center formContent horizontally within formSection */
+  justify-content: flex-start; /* ADDED: Ensure content starts from the top, not centered vertically */
+}
+
+/* This div (.formContent) now acts as a simple wrapper. */
+/* Its height will be determined by its content (.formInnerContent). */
+.formSection .formContent {
+  width: 100%;
+  /* REMOVED: height: 100%; */ /* Let its height be determined by its content */
+  /* REMOVED: flex-grow: 1; */ /* Let its height be determined by its content */
+  display: flex;
+  flex-direction: column;
+  /* REMOVED: justify-content: center; if it was here */
+  /* REMOVED: align-items: center; if it was here */
+  /* ADDED: No specific height or flex-grow here, let content dictate height */
+}
+
+/* This is the actual content container that gets padding and max-width */
+.formSection .formInnerContent {
+  padding: 10px; /* Padding for the content *inside* the scrollable area */
+  max-width: 360px; /* Max width for the content */
+  /* REMOVED: margin-left: auto; */ /* Centering handled by formSection's align-items */
+  /* REMOVED: margin-right: auto; */ /* Centering handled by formSection's align-items */
+  width: 100%; /* Ensure it takes full width up to max-width */
+  box-sizing: border-box; /* Include padding in width calculation */
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack its children vertically */
+  gap: 10px; /* Gap between major blocks inside formInnerContent */
+  /* ADDED: No flex-grow or justify-content here, let content flow */
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.errorMessage {
+  background: #fed7d7;
+  color: #c53030;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.formRow {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.inputGroup input,
+.inputGroup select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.inputGroup input:focus,
+.inputGroup select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.inputGroup input::placeholder,
+.inputGroup select::placeholder {
+  color: #a0aec0;
+}
+
+.signupButton {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.signupButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.signupButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loginRedirect {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.loginRedirect p {
+  color: #718096;
+  margin: 0;
+}
+
+.link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.logo {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.welcomeText {
+  margin-bottom: 50px;
+}
+
+.welcomeText h2 {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.welcomeText p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.featureIcon {
+  font-size: 1.5rem;
+  margin-right: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.feature span {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .signup {
+    height: auto;
+    min-height: 100vh;
+    padding: 10px;
+    align-items: flex-start;
+  }
+  
+  .signupContainer {
+    flex-direction: column;
+    height: auto;
+    margin: 20px 0;
+  }
+  
+  .formSection {
+    padding: 30px 20px;
+    order: 2;
+  }
+  
+  .illustrationSection {
+    padding: 60px 20px 30px;
+    order: 1;
+  }
+  
+  .logo {
+    top: 20px;
+    left: 20px;
+  }
+  
+  .logo h1 {
+    font-size: 1.5rem;
+  }
+  
+  .welcomeText {
+    margin-bottom: 30px;
+  }
+  
+  .welcomeText h2 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .formSection {
+    padding: 20px 15px;
+  }
+  
+  .header {
+    margin-bottom: 30px;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .illustrationSection {
+    padding: 50px 15px 20px;
+  }
+  
+  .welcomeText h2 {
+    font-size: 1.6rem;
+  }
+  
+  .welcomeText p {
+    font-size: 1rem;
+  }
+  
+  .featureIcon {
+    font-size: 1.3rem;
+    min-width: 45px;
+    padding: 8px;
+  }
+  
+  .feature span {
+    font-size: 1rem;
+  }
+}
+
+/* Adjust header spacing and alignment */
+.formSection .header {
+  text-align: center;
+  margin-bottom: 0; /* Let formInnerContent's gap handle spacing below header */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers h1 and p horizontally */
+  gap: 8px; /* Gap between h1 and p */
+}
+
+.formSection .header h1 {
+  font-size: 36px; /* Keep this font size as per instruction */
+  font-weight: 900;
+  color: black;
+  margin: 0;
+}
+
+.formSection .header p {
+  font-size: 16px; /* Adjusted subtitle font size */
+  color: #555; /* Slightly softer color for subtitle */
+  margin: 0;
+}
+
+/* General font size adjustments for other elements */
+.inputGroup label {
+  font-size: 14px; /* Labels */
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.inputGroup input::placeholder {
+  font-size: 14px; /* Placeholder text */
+  color: #888;
+}
+
+.loginRedirect p, .securityFooter p {
+  font-size: 14px; /* Footer text */
+}
