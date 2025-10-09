@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { notifications } from '../lib/mockData';
 import { Notification } from '../types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from './ui/utils';
 import { AlertTriangle, CheckCircle, Info, AlertCircle } from 'lucide-react';
 import { Separator } from './ui/separator';
@@ -27,23 +27,33 @@ const notificationColors = {
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
-  onLogout: () => void; // Add this line
+  onLogout: () => void;
   profilePhoto?: string;
   userName?: string;
   userRole?: string;
 }
 
-export function UpdatedHeader({ 
-  onNavigate, 
+export function UpdatedHeader({
+  onNavigate,
   onLogout,
-  profilePhoto, 
-  userName = 'John Doe', 
-  userRole = 'Super Admin' 
+  profilePhoto,
+  userName = 'John Doe',
+  userRole = 'Super Admin'
 }: HeaderProps) {
   const [notifs, setNotifs] = useState<Notification[]>(notifications);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000); // Update every second
+
+    return () => clearInterval(timer); // Cleanup on component unmount
+  }, []);
+
   const unreadCount = notifs.filter(n => !n.isRead).length;
 
   const markAllAsRead = () => {
@@ -59,6 +69,18 @@ export function UpdatedHeader({
     setProfileOpen(false);
     onNavigate('settings');
   };
+
+  const formattedTime = currentTime.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  const formattedDate = currentTime.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
 
   return (
     <header className="h-16 border-b border-border bg-white px-6 flex items-center justify-between sticky top-0 z-10">
@@ -77,18 +99,18 @@ export function UpdatedHeader({
       <div className="flex items-center gap-4">
         <span className="text-sm text-muted-foreground hidden sm:block">
           <span className="inline-flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-            05:03 PM
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+            {formattedTime}
           </span>
           <span className="mx-2">•</span>
-          Wed, Oct 8
+          {formattedDate}
         </span>
 
         {/* Notifications Button */}
         <div className="relative">
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="relative"
             onClick={() => setNotificationOpen(!notificationOpen)}
           >
@@ -103,8 +125,8 @@ export function UpdatedHeader({
           {/* Notification Dropdown */}
           {notificationOpen && (
             <>
-              <div 
-                className="fixed inset-0 z-40" 
+              <div
+                className="fixed inset-0 z-40"
                 onClick={() => setNotificationOpen(false)}
               />
               <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -162,7 +184,7 @@ export function UpdatedHeader({
 
         {/* Profile Dropdown */}
         <div className="relative">
-          <button 
+          <button
             className="flex items-center gap-3 pl-3 border-l h-auto py-2 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
             onClick={() => setProfileOpen(!profileOpen)}
           >
@@ -182,8 +204,8 @@ export function UpdatedHeader({
           {/* Profile Dropdown Menu */}
           {profileOpen && (
             <>
-              <div 
-                className="fixed inset-0 z-40" 
+              <div
+                className="fixed inset-0 z-40"
                 onClick={() => setProfileOpen(false)}
               />
               <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -214,7 +236,7 @@ export function UpdatedHeader({
                     <User className="h-4 w-4 text-gray-600" />
                     <span>My Profile</span>
                   </button>
-                  
+
                   <button
                     onClick={handleSettingsClick}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
@@ -222,14 +244,14 @@ export function UpdatedHeader({
                     <Settings className="h-4 w-4 text-gray-600" />
                     <span>Account Settings</span>
                   </button>
-                  
+
                   <button
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
                   >
                     <HelpCircle className="h-4 w-4 text-gray-600" />
                     <span>Help & Support</span>
                   </button>
-                  
+
                   <button
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
                   >
@@ -243,7 +265,7 @@ export function UpdatedHeader({
                 {/* Sign Out */}
                 <div className="p-2">
                   <button
-                    onClick={onLogout} // Use the onLogout prop here
+                    onClick={onLogout}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-50 text-red-600 transition-colors text-left"
                   >
                     <LogOut className="h-4 w-4" />
@@ -257,8 +279,8 @@ export function UpdatedHeader({
       </div>
 
       {/* Search Popup */}
-      <SearchPopup 
-        open={searchOpen} 
+      <SearchPopup
+        open={searchOpen}
         onOpenChange={setSearchOpen}
         onNavigate={onNavigate}
       />
