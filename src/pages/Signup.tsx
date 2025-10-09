@@ -7,7 +7,7 @@ import Image2 from '../assets/photo-1758874383467-9aead920c794.jpg';
 import Image3 from '../assets/laptop-displaying-graphs-stockcake.jpg';
 
 // Import the CSS file
-import '../styles/signup.css';
+import '../styles/Signup.css';
 
 const slidesData = [
     {
