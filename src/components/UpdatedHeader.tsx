@@ -33,28 +33,26 @@ interface HeaderProps {
   userRole?: string;
 }
 
-export function UpdatedHeader({
+export function UpdatedHeader({ 
   onNavigate,
-  onLogout,
-  profilePhoto,
-  userName = 'John Doe',
-  userRole = 'Super Admin'
+  onLogout, 
+  profilePhoto, 
+  userName = 'John Doe', 
+  userRole = 'Super Admin' 
 }: HeaderProps) {
   const [notifs, setNotifs] = useState<Notification[]>(notifications);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const unreadCount = notifs.filter(n => !n.isRead).length;
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-    }, 1000); // Update every second
-
-    return () => clearInterval(timer); // Cleanup on component unmount
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
-
-  const unreadCount = notifs.filter(n => !n.isRead).length;
 
   const markAllAsRead = () => {
     setNotifs(notifs.map(n => ({ ...n, isRead: true })));
@@ -83,13 +81,13 @@ export function UpdatedHeader({
   });
 
   return (
-    <header className="h-16 border-b border-border bg-white px-6 flex items-center justify-between sticky top-0 z-10">
+    <header className="h-12 border-b border-border bg-white px-4 flex items-center justify-between sticky top-0 z-20 transition-all duration-300 text-xs">
       <div className="flex items-center gap-4 flex-1 max-w-xl">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
             placeholder="Search orders, customers, menu items..."
-            className="pl-10 bg-muted/50 border-0 cursor-pointer"
+            className="pl-10 bg-muted/50 border-0 cursor-pointer transition-all duration-200"
             readOnly
             onClick={() => setSearchOpen(true)}
           />
@@ -108,9 +106,9 @@ export function UpdatedHeader({
 
         {/* Notifications Button */}
         <div className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
+          <Button 
+            variant="ghost" 
+            size="icon" 
             className="relative"
             onClick={() => setNotificationOpen(!notificationOpen)}
           >
@@ -125,8 +123,8 @@ export function UpdatedHeader({
           {/* Notification Dropdown */}
           {notificationOpen && (
             <>
-              <div
-                className="fixed inset-0 z-40"
+              <div 
+                className="fixed inset-0 z-40" 
                 onClick={() => setNotificationOpen(false)}
               />
               <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -184,14 +182,20 @@ export function UpdatedHeader({
 
         {/* Profile Dropdown */}
         <div className="relative">
-          <button
-            className="flex items-center gap-3 pl-3 border-l h-auto py-2 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+          <button 
+            className="flex items-center gap-3 pl-3 border-l h-auto py-2 hover:bg-gray-50 rounded-md transition-all duration-200 cursor-pointer"
             onClick={() => setProfileOpen(!profileOpen)}
           >
             <Avatar className="h-9 w-9">
-              {profilePhoto && <AvatarImage src={profilePhoto} alt={userName} />}
-              <AvatarFallback className="bg-red-500 text-white">
-                {userName.split(' ').map(n => n[0]).join('')}
+              {profilePhoto ? (
+                <AvatarImage src={profilePhoto} alt={userName} />
+              ) : (
+                <div className="h-full w-full bg-gray-900 flex items-center justify-center">
+                  <User className="h-5 w-5 text-white" />
+                </div>
+              )}
+              <AvatarFallback className="bg-gray-900 text-white">
+                <User className="h-5 w-5" />
               </AvatarFallback>
             </Avatar>
             <div className="hidden sm:block text-left">
@@ -204,8 +208,8 @@ export function UpdatedHeader({
           {/* Profile Dropdown Menu */}
           {profileOpen && (
             <>
-              <div
-                className="fixed inset-0 z-40"
+              <div 
+                className="fixed inset-0 z-40" 
                 onClick={() => setProfileOpen(false)}
               />
               <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -213,9 +217,15 @@ export function UpdatedHeader({
                 <div className="p-4 bg-gray-50">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
-                      {profilePhoto && <AvatarImage src={profilePhoto} alt={userName} />}
-                      <AvatarFallback className="bg-red-500 text-white">
-                        {userName.split(' ').map(n => n[0]).join('')}
+                      {profilePhoto ? (
+                        <AvatarImage src={profilePhoto} alt={userName} />
+                      ) : (
+                        <div className="h-full w-full bg-gray-900 flex items-center justify-center">
+                          <User className="h-6 w-6 text-white" />
+                        </div>
+                      )}
+                      <AvatarFallback className="bg-gray-900 text-white">
+                        <User className="h-6 w-6" />
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
@@ -236,7 +246,7 @@ export function UpdatedHeader({
                     <User className="h-4 w-4 text-gray-600" />
                     <span>My Profile</span>
                   </button>
-
+                  
                   <button
                     onClick={handleSettingsClick}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
@@ -244,14 +254,14 @@ export function UpdatedHeader({
                     <Settings className="h-4 w-4 text-gray-600" />
                     <span>Account Settings</span>
                   </button>
-
+                  
                   <button
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
                   >
                     <HelpCircle className="h-4 w-4 text-gray-600" />
                     <span>Help & Support</span>
                   </button>
-
+                  
                   <button
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
                   >
@@ -266,7 +276,7 @@ export function UpdatedHeader({
                 <div className="p-2">
                   <button
                     onClick={onLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-50 text-red-600 transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-50 text-red-600 transition-all duration-200 text-left"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Sign out</span>
@@ -279,8 +289,8 @@ export function UpdatedHeader({
       </div>
 
       {/* Search Popup */}
-      <SearchPopup
-        open={searchOpen}
+      <SearchPopup 
+        open={searchOpen} 
         onOpenChange={setSearchOpen}
         onNavigate={onNavigate}
       />

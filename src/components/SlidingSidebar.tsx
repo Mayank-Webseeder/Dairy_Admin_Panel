@@ -18,7 +18,7 @@ import { cn } from '../components/ui/utils';
 interface SidebarProps {
   currentPage: string;
   onPageChange: (page: string) => void;
-  onLogout: () => void; // Add this line
+  onLogout: () => void;
 }
 
 const menuItems = [
@@ -41,26 +41,26 @@ export function SlidingSidebar({ currentPage, onPageChange, onLogout }: SidebarP
   return (
     <div
       className={cn(
-        "h-full bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col",
+        "fixed left-0 top-0 h-full bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col z-50 shadow-lg",
         isExpanded ? "w-64" : "w-20"
       )}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center justify-center border-b border-gray-200 px-4">
-        <div className="h-10 w-10 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Package className="h-6 w-6 text-white" />
+      <div className="h-12 flex items-center justify-center border-b border-gray-200 px-4">
+        <div className="h-8 w-8 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300">
+          <Package className="h-4 w-4 text-white" />
         </div>
         {isExpanded && (
-          <span className="ml-3 text-foreground whitespace-nowrap">
+          <span className="ml-3 text-foreground whitespace-nowrap transition-opacity duration-300 text-xs">
             Dairy Admin
           </span>
         )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-6 px-3 overflow-y-auto">
+      <nav className="flex-1 py-4 px-3 overflow-y-auto">
         <div className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -71,15 +71,15 @@ export function SlidingSidebar({ currentPage, onPageChange, onLogout }: SidebarP
                 key={item.id}
                 onClick={() => onPageChange(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors",
+                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-xs",
                   isActive 
                     ? "bg-red-50 text-red-600" 
                     : "text-gray-600 hover:bg-gray-50"
                 )}
               >
-                <Icon className={cn("h-5 w-5 flex-shrink-0", isActive && "text-red-600")} />
+                <Icon className={cn("h-4 w-4 flex-shrink-0 transition-colors duration-200", isActive && "text-red-600")} />
                 {isExpanded && (
-                  <span className="whitespace-nowrap">{item.label}</span>
+                  <span className="whitespace-nowrap transition-opacity duration-300">{item.label}</span>
                 )}
               </button>
             );
@@ -90,12 +90,12 @@ export function SlidingSidebar({ currentPage, onPageChange, onLogout }: SidebarP
       {/* Logout Button */}
       <div className="p-3 border-t border-gray-200">
         <button
-          onClick={onLogout} // Use the onLogout prop here
-          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+          onClick={onLogout}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 text-xs"
         >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
+          <LogOut className="h-4 w-4 flex-shrink-0" />
           {isExpanded && (
-            <span className="whitespace-nowrap">Logout</span>
+            <span className="whitespace-nowrap transition-opacity duration-300">Logout</span>
           )}
         </button>
       </div>

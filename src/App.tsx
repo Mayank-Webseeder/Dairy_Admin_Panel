@@ -11,9 +11,9 @@ import { UserManagement } from './pages/UserManagement';
 import { BranchManagement } from './pages/BranchManagement';
 import { DeliveryStaff } from './pages/DeliveryStaff';
 import { HomePageManagement } from './pages/HomePageManagement';
-import { TrendingUp, FileText } from 'lucide-react';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
+import { TrendingUp, FileText } from 'lucide-react';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('login');
@@ -40,6 +40,8 @@ export default function App() {
     if (confirm('Are you sure you want to logout?')) {
       setIsLoggedIn(false);
       setCurrentPage('login');
+      setProfilePhoto('');
+      setUserName('John Doe');
     }
   };
 
@@ -82,19 +84,19 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="relative h-screen bg-gray-50">
       <SlidingSidebar 
         currentPage={currentPage} 
         onPageChange={setCurrentPage}
-        onLogout={handleLogout} 
+        onLogout={handleLogout}
       />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <UpdatedHeader
+      <div className="flex flex-col h-full ml-20">
+        <UpdatedHeader 
           onNavigate={setCurrentPage}
+          onLogout={handleLogout}
           profilePhoto={profilePhoto}
           userName={userName}
           userRole="Super Admin"
-          onLogout={handleLogout}
         />
         <main className="flex-1 overflow-y-auto">
           {renderPage()}

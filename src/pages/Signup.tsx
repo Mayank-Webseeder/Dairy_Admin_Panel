@@ -1,43 +1,38 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
-// Import your images from the new assets folder
-import Image1 from '../assets/HEADER-IMAGE 1.png';
-import Image2 from '../assets/photo-1758874383467-9aead920c794.jpg';
-import Image3 from '../assets/laptop-displaying-graphs-stockcake.jpg';
+import { slideshowImages } from '../assets/images';
 
 // Import the CSS file
-import '../styles/Signup.css';
+import '../styles/signup.css';
 
 const slidesData = [
-    {
-      image: Image1,
-      title: "Welcome to DairyDash",
-      subtitle: "Create your account and get started",
-      features: [
-        { icon: "🛡️", heading: "Secure Registration", description: "Your information is protected with advanced encryption" },
-        { icon: "⚡", heading: "Quick Setup", description: "Get your account ready in just a few simple steps" }
-      ]
-    },
-    {
-      image: Image2,
-      title: "Unlock New Possibilities",
-      subtitle: "Access powerful tools and features",
-      features: [
-        { icon: "📈", heading: "Data Insights", description: "Gain valuable insights from your data with ease" },
-        { icon: "🤝", heading: "Collaborate Seamlessly", description: "Work with your team efficiently on shared projects" }
-      ]
-    },
-    {
-      image: Image3,
-      title: "Your Journey Starts Here",
-      subtitle: "Join our community and grow with us",
-      features: [
-        { icon: "🌟", heading: "Personalized Experience", description: "Tailor your dashboard to fit your unique needs" },
-        { icon: "🌐", heading: "Global Reach", description: "Connect with users and resources worldwide" }
-      ]
-    }
-  ];
+  {
+    image: slideshowImages[0],
+    title: "Welcome to DairyDash",
+    subtitle: "Create your account and get started",
+    features: [
+      { icon: "🛡️", heading: "Secure Registration", description: "Your information is protected with advanced encryption" },
+      { icon: "⚡", heading: "Quick Setup", description: "Get your account ready in just a few simple steps" }
+    ]
+  },
+  {
+    image: slideshowImages[1],
+    title: "Unlock New Possibilities",
+    subtitle: "Access powerful tools and features",
+    features: [
+      { icon: "📈", heading: "Data Insights", description: "Gain valuable insights from your data with ease" },
+      { icon: "🤝", heading: "Collaborate Seamlessly", description: "Work with your team efficiently on shared projects" }
+    ]
+  },
+  {
+    image: slideshowImages[2],
+    title: "Your Journey Starts Here",
+    subtitle: "Join our community and grow with us",
+    features: [
+      { icon: "🌟", heading: "Personalized Experience", description: "Tailor your dashboard to fit your unique needs" },
+      { icon: "🌐", heading: "Global Reach", description: "Connect with users and resources worldwide" }
+    ]
+  }
+];
 
 interface SignupProps {
   onSignup: () => void;
@@ -61,7 +56,7 @@ export function Signup({ onSignup, onNavigate }: SignupProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlideIndex((prevIndex) => (prevIndex + 1) % slidesData.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -90,8 +85,8 @@ export function Signup({ onSignup, onNavigate }: SignupProps) {
         setLoading(false);
       }, 1000);
     } else {
-        setError("Please fill out all required fields.");
-        setLoading(false);
+      setError("Please fill out all required fields.");
+      setLoading(false);
     }
   };
 
@@ -110,6 +105,9 @@ export function Signup({ onSignup, onNavigate }: SignupProps) {
           ))}
           <div className="slideshow-content">
             <div className="logo">
+              <div className="logo-icon">
+                <span>🥛</span>
+              </div>
               <h1>DairyDash</h1>
             </div>
             <div className="welcomeMessage">
@@ -259,4 +257,4 @@ export function Signup({ onSignup, onNavigate }: SignupProps) {
       </div>
     </div>
   );
-};
+}

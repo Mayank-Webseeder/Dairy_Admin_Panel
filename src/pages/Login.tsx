@@ -1,18 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Assuming you'll use react-router-dom
+import webseederLogo from 'figma:asset/dbec6477395e40f9a594682daf5e89e877d326cc.png';
+import { slideshowImages } from '../assets/images';
 
-// Import your images from the new assets folder
-import Image1 from '../assets/HEADER-IMAGE 1.png';
-import Image2 from '../assets/laptop-displaying-graphs-stockcake.jpg';
-import Image3 from '../assets/photo-1758874383467-9aead920c794.jpg';
-import WebSeederLogo from '../assets/WebSeeder Favicon 2.jpg';
-
-// Import the CSS file
+// Import your CSS file
 import '../styles/login.css';
 
 const slidesData = [
   {
-    image: Image1,
+    image: slideshowImages[0],
     title: "Welcome Back",
     subtitle: "Sign in to access your dashboard",
     features: [
@@ -21,7 +16,7 @@ const slidesData = [
     ]
   },
   {
-    image: Image2,
+    image: slideshowImages[1],
     title: "Modern Interface",
     subtitle: "Experience our redesigned, intuitive platform",
     features: [
@@ -30,7 +25,7 @@ const slidesData = [
     ]
   },
   {
-    image: Image3,
+    image: slideshowImages[2],
     title: "Seamless Integration",
     subtitle: "Connect with your favorite tools effortlessly",
     features: [
@@ -58,7 +53,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlideIndex((prevIndex) => (prevIndex + 1) % slidesData.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -103,6 +98,9 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
           ))}
           <div className="slideshow-content">
             <div className="logo">
+              <div className="logo-icon">
+                <span>🥛</span>
+              </div>
               <h1>DairyDash</h1>
             </div>
             <div className="welcomeMessage">
@@ -126,7 +124,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
         <div className="formSection">
           <div className="formContent">
             <div className="header">
-              <img src={WebSeederLogo} alt="WebSeeder Logo" className="login-logo" />
+              <img src={webseederLogo} alt="WebSeeder Logo" className="login-logo" />
               <h1>Welcome Back</h1>
               <p>Sign in to your account to continue</p>
             </div>
@@ -204,4 +202,4 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
       </div>
     </div>
   );
-};
+}
