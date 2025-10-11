@@ -146,9 +146,9 @@ export function DeliveryStaff() {
                     <Badge
                       variant="secondary"
                       className={cn(
-                        "capitalize",
-                        staff.status === 'active' && "bg-green-50 text-green-600",
-                        staff.status === 'inactive' && "bg-gray-100 text-gray-600"
+                        "capitalize text-[10px] h-5",
+                        staff.status === 'active' && "bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]",
+                        staff.status === 'inactive' && "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100"
                       )}
                     >
                       {staff.status}

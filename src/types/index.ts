@@ -26,6 +26,10 @@ export interface Customer {
   totalOrders: number;
   totalSpent: number;
   joinDate: string;
+  status: 'active' | 'inactive';
+  branch?: string;
+  customerType?: 'new' | 'returning' | 'high-value';
+  lastOrderDate?: string;
 }
 
 export interface Notification {

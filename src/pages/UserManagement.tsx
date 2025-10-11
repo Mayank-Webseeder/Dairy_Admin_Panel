@@ -383,8 +383,8 @@ export function UserManagement() {
                   <Badge
                     variant="secondary"
                     className={user.status === 'active' 
-                      ? 'bg-green-50 text-green-700 hover:bg-green-50' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-100'}
+                      ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]' 
+                      : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100'}
                   >
                     {user.status}
                   </Badge>

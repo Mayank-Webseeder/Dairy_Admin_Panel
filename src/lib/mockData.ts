@@ -22,11 +22,14 @@ export const orders: Order[] = [
 ];
 
 export const customers: Customer[] = [
-  { id: '1', name: 'Rajesh Kumar', email: 'rajesh.k@email.com', phone: '+91 98765 43210', totalOrders: 24, totalSpent: 8950, joinDate: '2025-05-15' },
-  { id: '2', name: 'Priya Sharma', email: 'priya.s@email.com', phone: '+91 98765 43211', totalOrders: 18, totalSpent: 6780, joinDate: '2025-06-22' },
-  { id: '3', name: 'Amit Patel', email: 'amit.p@email.com', phone: '+91 98765 43212', totalOrders: 32, totalSpent: 12450, joinDate: '2025-04-10' },
-  { id: '4', name: 'Neha Singh', email: 'neha.s@email.com', phone: '+91 98765 43213', totalOrders: 15, totalSpent: 5340, joinDate: '2025-07-05' },
-  { id: '5', name: 'Vijay Reddy', email: 'vijay.r@email.com', phone: '+91 98765 43214', totalOrders: 28, totalSpent: 10230, joinDate: '2025-05-28' },
+  { id: '1', name: 'Rajesh Kumar', email: 'rajesh.k@email.com', phone: '+91 98765 43210', totalOrders: 24, totalSpent: 8950, joinDate: '2025-05-15', status: 'active', branch: 'Central Branch', customerType: 'returning', lastOrderDate: '2025-10-08' },
+  { id: '2', name: 'Priya Sharma', email: 'priya.s@email.com', phone: '+91 98765 43211', totalOrders: 18, totalSpent: 6780, joinDate: '2025-06-22', status: 'active', branch: 'North Branch', customerType: 'returning', lastOrderDate: '2025-10-07' },
+  { id: '3', name: 'Amit Patel', email: 'amit.p@email.com', phone: '+91 98765 43212', totalOrders: 32, totalSpent: 12450, joinDate: '2025-04-10', status: 'active', branch: 'South Branch', customerType: 'high-value', lastOrderDate: '2025-10-08' },
+  { id: '4', name: 'Neha Singh', email: 'neha.s@email.com', phone: '+91 98765 43213', totalOrders: 15, totalSpent: 5340, joinDate: '2025-07-05', status: 'inactive', branch: 'Central Branch', customerType: 'returning', lastOrderDate: '2025-09-15' },
+  { id: '5', name: 'Vijay Reddy', email: 'vijay.r@email.com', phone: '+91 98765 43214', totalOrders: 28, totalSpent: 10230, joinDate: '2025-05-28', status: 'active', branch: 'East Branch', customerType: 'high-value', lastOrderDate: '2025-10-06' },
+  { id: '6', name: 'Ananya Iyer', email: 'ananya.i@email.com', phone: '+91 98765 43215', totalOrders: 3, totalSpent: 890, joinDate: '2025-09-20', status: 'active', branch: 'North Branch', customerType: 'new', lastOrderDate: '2025-10-05' },
+  { id: '7', name: 'Karthik Menon', email: 'karthik.m@email.com', phone: '+91 98765 43216', totalOrders: 42, totalSpent: 15670, joinDate: '2025-03-12', status: 'active', branch: 'Central Branch', customerType: 'high-value', lastOrderDate: '2025-10-09' },
+  { id: '8', name: 'Divya Nair', email: 'divya.n@email.com', phone: '+91 98765 43217', totalOrders: 21, totalSpent: 7890, joinDate: '2025-06-18', status: 'active', branch: 'South Branch', customerType: 'returning', lastOrderDate: '2025-10-07' },
 ];
 
 export const notifications: Notification[] = [

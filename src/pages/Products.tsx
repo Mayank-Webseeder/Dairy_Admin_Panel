@@ -15,14 +15,17 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 export function Products() {
   const [productList, setProductList] = useState<Product[]>(initialProducts);
   const [selectedBranch, setSelectedBranch] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const filteredProducts = selectedBranch === 'all' 
-    ? productList 
-    : productList.filter(p => p.branch === selectedBranch);
+  const filteredProducts = productList.filter(p => {
+    const matchesBranch = selectedBranch === 'all' || p.branch === selectedBranch;
+    const matchesCategory = selectedCategory === 'all' || p.category.toLowerCase() === selectedCategory.toLowerCase();
+    return matchesBranch && matchesCategory;
+  });
 
   const handleAddProduct = (product: Partial<Product>) => {
     setProductList([...productList, product as Product]);
@@ -80,7 +83,7 @@ export function Products() {
             </Select>
           </div>
 
-          <Select defaultValue="all">
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-40">
               <SelectValue />
             </SelectTrigger>
@@ -138,9 +141,15 @@ export function Products() {
                   <td className="py-3 px-4">
                     <Badge
                       variant={product.stock > 50 ? 'default' : 'secondary'}
-                      className={product.stock > 50 ? 'bg-green-500' : 'bg-yellow-500'}
+                      className={
+                        product.stock > 50 
+                          ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9] text-[10px] h-5' 
+                          : product.stock > 20
+                          ? 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50 text-[10px] h-5'
+                          : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100 text-[10px] h-5'
+                      }
                     >
-                      {product.stock > 50 ? 'In Stock' : 'Low Stock'}
+                      {product.stock > 50 ? 'In Stock' : product.stock > 20 ? 'Low Stock' : 'Out of Stock'}
                     </Badge>
                   </td>
                   <td className="py-3 px-4">

@@ -313,10 +313,10 @@ export function Orders() {
                       variant="secondary"
                       className={
                         order.status === 'completed' 
-                          ? 'bg-green-50 text-green-700 hover:bg-green-50' 
+                          ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9] text-[10px] h-5' 
                           : order.status === 'pending'
-                          ? 'bg-orange-50 text-orange-700 hover:bg-orange-50'
-                          : 'bg-red-50 text-red-700 hover:bg-red-50'
+                          ? 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50 text-[10px] h-5'
+                          : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100 text-[10px] h-5'
                       }
                     >
                       {order.status}

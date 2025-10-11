@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Search, LayoutDashboard, ShoppingCart, Package, Users, Building2, Bike, Settings, Home } from 'lucide-react';
-import { Dialog, DialogContent } from './ui/dialog';
+import { Dialog, DialogContent, DialogDescription } from './ui/dialog';
 import { Input } from './ui/input';
 import { cn } from './ui/utils';
 
@@ -52,6 +52,9 @@ export function SearchPopup({ open, onOpenChange, onNavigate }: SearchPopupProps
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl p-0 gap-0">
+        <DialogDescription className="sr-only">
+          Search for pages and navigate quickly through the admin panel
+        </DialogDescription>
         <div className="flex items-center border-b px-4 py-3">
           <Search className="h-5 w-5 text-muted-foreground mr-3" />
           <Input

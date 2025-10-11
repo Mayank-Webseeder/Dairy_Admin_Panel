@@ -1,9 +1,16 @@
 import { useState } from 'react';
-import { Building2, Search, Edit2, Trash2, Download, MapPin, TrendingUp, CheckCircle, Phone, Mail, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Building2, Search, Edit2, Trash2, Download, MapPin, TrendingUp, CheckCircle, Phone, Mail, ToggleLeft, ToggleRight, MoreVertical, ChevronDown } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Card } from '../components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import {
   Table,
   TableBody,
@@ -20,16 +27,23 @@ import { DeleteConfirmationModal } from '../components/modals/DeleteConfirmation
 
 export function BranchManagement() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [cityFilter, setCityFilter] = useState('all');
+  const [entriesPerPage, setEntriesPerPage] = useState('10');
   const [branchList, setBranchList] = useState<Branch[]>(initialBranches);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
 
-  const filteredBranches = branchList.filter(branch =>
-    branch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    branch.location.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredBranches = branchList.filter(branch => {
+    const matchesSearch = branch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      branch.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || branch.status === statusFilter;
+    const matchesCity = cityFilter === 'all' || branch.city === cityFilter;
+    
+    return matchesSearch && matchesStatus && matchesCity;
+  });
 
   const handleAddBranch = (branch: Partial<Branch>) => {
     setBranchList([...branchList, branch as Branch]);
@@ -145,15 +159,68 @@ export function BranchManagement() {
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200">
-        <div className="p-4 border-b">
+        <div className="p-4 border-b space-y-3">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
             <Input
               placeholder="Search branches..."
-              className="pl-9 text-xs h-9 transition-all duration-200"
+              className="pl-9 text-xs h-8 transition-all duration-200"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+          </div>
+          
+          {/* Filters Row */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="h-8 text-xs w-[140px]">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">All Status</SelectItem>
+                  <SelectItem value="active" className="text-xs">Active</SelectItem>
+                  <SelectItem value="inactive" className="text-xs">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={cityFilter} onValueChange={setCityFilter}>
+                <SelectTrigger className="h-8 text-xs w-[140px]">
+                  <SelectValue placeholder="All Cities" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">All Cities</SelectItem>
+                  {[...new Set(branchList.map(b => b.city))].map(city => (
+                    <SelectItem key={city} value={city} className="text-xs">{city}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>Show:</span>
+                <Select value={entriesPerPage} onValueChange={setEntriesPerPage}>
+                  <SelectTrigger className="h-8 text-xs w-[70px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5" className="text-xs">5</SelectItem>
+                    <SelectItem value="10" className="text-xs">10</SelectItem>
+                    <SelectItem value="25" className="text-xs">25</SelectItem>
+                    <SelectItem value="50" className="text-xs">50</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span>entries</span>
+              </div>
+            </div>
+
+            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1">
+              <MoreVertical className="h-3 w-3" />
+              More
+            </Button>
+          </div>
+
+          <div className="text-xs text-muted-foreground">
+            Showing {filteredBranches.length} of {branchList.length} branches
           </div>
         </div>
 
@@ -231,7 +298,7 @@ export function BranchManagement() {
                         </div>
                         <Badge
                           variant="secondary"
-                          className="bg-green-50 text-green-700 hover:bg-green-50 text-xs"
+                          className="bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9] text-xs h-5"
                         >
                           Active
                         </Badge>
@@ -243,7 +310,7 @@ export function BranchManagement() {
                         </div>
                         <Badge
                           variant="secondary"
-                          className="bg-gray-100 text-gray-600 hover:bg-gray-100 text-xs"
+                          className="bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100 text-xs h-5"
                         >
                           Inactive
                         </Badge>

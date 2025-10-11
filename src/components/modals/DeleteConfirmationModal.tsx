@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { AlertTriangle } from 'lucide-react';
 
@@ -31,8 +31,10 @@ export function DeleteConfirmationModal({
               <AlertTriangle className="h-6 w-6 text-red-600" />
             </div>
             <div>
-              <DialogTitle>{title}</DialogTitle>
-              <p className="text-sm text-muted-foreground mt-1">{description}</p>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. The item will be permanently deleted.
+              </DialogDescription>
             </div>
           </div>
         </DialogHeader>
