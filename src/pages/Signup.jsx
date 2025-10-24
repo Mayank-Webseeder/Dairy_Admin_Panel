@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { slideshowImages } from '../assets/images';
 
 // Import the CSS file
-import '../styles/signup.css';
+import '../styles/Signup.css';
 
 const slidesData = [
   {
