@@ -1,3 +1,16 @@
+export interface Branch {
+  id: string;
+  name: string;
+  location: string;
+  revenue: number;
+  orders: number;
+  status: 'active' | 'inactive';
+  city: string;
+  manager?: string;
+  adminEmail?: string;
+  contactNumber?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -5,8 +18,8 @@ export interface Product {
   price: number;
   stock: number;
   unit: string;
-  image?: string;
   branch?: string;
+  image?: string;
 }
 
 export interface Order {
@@ -14,8 +27,8 @@ export interface Order {
   customerName: string;
   items: number;
   total: number;
-  status: 'pending' | 'completed' | 'cancelled';
   date: string;
+  status: 'completed' | 'pending' | 'cancelled';
 }
 
 export interface Customer {
@@ -23,22 +36,12 @@ export interface Customer {
   name: string;
   email: string;
   phone: string;
+  branch?: string;
   totalOrders: number;
   totalSpent: number;
-  joinDate: string;
-  status: 'active' | 'inactive';
-  branch?: string;
-  customerType?: 'new' | 'returning' | 'high-value';
   lastOrderDate?: string;
-}
-
-export interface Notification {
-  id: string;
-  type: 'alert' | 'success' | 'info' | 'warning';
-  title: string;
-  message: string;
-  time: string;
-  isRead: boolean;
+  status: 'active' | 'inactive';
+  customerType?: 'new' | 'returning' | 'high-value';
 }
 
 export interface DeliveryBoy {
@@ -48,32 +51,13 @@ export interface DeliveryBoy {
   orders: number;
   rating: number;
   status: 'active' | 'inactive';
-  avatar?: string;
 }
 
 export interface User {
   id: string;
-  name: string;
+  name:string;
   email: string;
   role: string;
   status: 'active' | 'inactive';
   joinDate: string;
-}
-
-export interface Branch {
-  id: string;
-  name: string;
-  location: string;
-  manager: string;
-  orders: number;
-  revenue: number;
-  status: 'active' | 'inactive';
-  city?: string;
-  state?: string;
-  pincode?: string;
-  address?: string;
-  contactNumber?: string;
-  adminEmail?: string;
-  openingHours?: string;
-  seatingCapacity?: number;
 }
