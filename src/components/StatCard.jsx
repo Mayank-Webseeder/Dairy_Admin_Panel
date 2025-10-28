@@ -1,18 +1,17 @@
-import { ArrowUp } from 'lucide-react';
 import { Card } from './ui/card';
 
 export function StatCard({ title, value, icon: Icon }) {
   return (
-    <Card className="p-6 flex items-center justify-between transition-all duration-200 hover:shadow-md">
-      <div>
-        <p className="text-sm text-muted-foreground">{title}</p>
-        <p className="text-2xl font-semibold">{value}</p>
-      </div>
-      <div className="bg-red-100 p-3 rounded-full">
-        <Icon className="h-6 w-6 text-red-500" />
+    <Card className="p-6 transition-all duration-200 hover:shadow-md">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm text-muted-foreground mb-2">{title}</p>
+          <h3 className="text-2xl">{value}</h3>
+        </div>
+        <div className="h-12 w-12 bg-red-50 rounded-full flex items-center justify-center transition-transform duration-200 hover:scale-110">
+          <Icon className="h-6 w-6 text-red-500" />
+        </div>
       </div>
     </Card>
   );
 }
-
-

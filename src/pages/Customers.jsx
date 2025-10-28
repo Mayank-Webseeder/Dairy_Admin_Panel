@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Edit2, Trash2, MoreVertical, Users, UserCheck, Repeat, TrendingUp, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { Search, Edit2, Trash2, MoreVertical, Users, UserCheck, Repeat, TrendingUp, Mail, Phone, MapPin, Calendar, Filter, ChevronDown, X, Eye } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
@@ -25,6 +25,7 @@ import { customers as initialCustomers } from '../lib/mockData';
 import { EditModal } from '../components/modals/EditModal';
 import { DeleteConfirmationModal } from '../components/modals/DeleteConfirmationModal';
 import { AddCustomerModal } from '../components/modals/AddCustomerModal';
+import { CustomerDetailsModal } from '../components/modals/CustomerDetailsModal';
 
 export function Customers() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,16 +37,54 @@ export function Customers() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
+  
+  // More filter states
+  const [timeFilter, setTimeFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const filteredCustomers = customerList.filter(customer => {
     const matchesSearch = customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.phone.includes(searchQuery);
     const matchesBranch = branchFilter === 'all' || customer.branch === branchFilter;
-    const matchesStatus = statusFilter === 'all' || customer.status === statusFilter;
     
-    return matchesSearch && matchesBranch && matchesStatus;
+    let matchesStatus = true;
+    if (statusFilter === 'active' || statusFilter === 'inactive') {
+      matchesStatus = customer.status === statusFilter;
+    } else if (statusFilter === 'frequent') {
+      matchesStatus = customer.totalOrders >= 20;
+    } else if (statusFilter === 'occasional') {
+      matchesStatus = customer.totalOrders < 10;
+    }
+    
+    // Time filter
+    let matchesTime = true;
+    if (timeFilter === 'today') {
+      const today = new Date().toISOString().split('T')[0];
+      matchesTime = customer.lastOrderDate === today;
+    } else if (timeFilter === 'week') {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      matchesTime = customer.lastOrderDate ? new Date(customer.lastOrderDate) >= weekAgo : false;
+    } else if (timeFilter === 'month') {
+      const monthAgo = new Date();
+      monthAgo.setDate(monthAgo.getDate() - 30);
+      matchesTime = customer.lastOrderDate ? new Date(customer.lastOrderDate) >= monthAgo : false;
+    }
+    
+    return matchesSearch && matchesBranch && matchesStatus && matchesTime;
+  }).sort((a, b) => {
+    // Apply sorting
+    let compareValue = 0;
+    if (sortBy === 'name') compareValue = a.name.localeCompare(b.name);
+    else if (sortBy === 'spend') compareValue = a.totalSpent - b.totalSpent;
+    else if (sortBy === 'orders') compareValue = a.totalOrders - b.totalOrders;
+    
+    return sortOrder === 'asc' ? compareValue : -compareValue;
   });
 
   const handleEditCustomer = (updatedData) => {
@@ -96,29 +135,25 @@ export function Customers() {
 
   return (
     <div className="p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg">Customers</h2>
-          <p className="text-muted-foreground text-xs">Management</p>
-        </div>
+      <div className="mb-4 flex items-center justify-end">
         <div className="flex gap-2">
           <Button 
             variant="outline"
             size="sm"
-            className="transition-all duration-200 h-9 text-xs border-gray-200"
+            className="transition-all duration-200 h-9 text-xs border border-gray-300"
           >
             🔄 Refresh
           </Button>
           <Button 
             variant="outline"
             size="sm"
-            className="transition-all duration-200 h-9 text-xs bg-red-500 text-white hover:bg-red-600 border-red-500"
+            className="transition-all duration-200 h-9 text-xs bg-red-500 text-white hover:bg-red-600 border border-red-500"
           >
             Export
           </Button>
           <Button 
             size="sm"
-            className="bg-red-500 hover:bg-red-600 transition-all duration-200 h-9 text-xs"
+            className="bg-red-500 hover:bg-red-600 transition-all duration-200 h-9 text-xs border border-red-500"
             onClick={() => setAddModalOpen(true)}
           >
             + Add Customer
@@ -176,64 +211,105 @@ export function Customers() {
 
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="p-4 border-b space-y-3">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-            <Input
-              placeholder="Search customers..."
-              className="pl-9 text-xs h-8 transition-all duration-200"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          {/* Single Row with Search and Filters */}
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, email or phone..."
+                className="pl-9 text-xs h-9 transition-all duration-200 border border-gray-300"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <Select value={branchFilter} onValueChange={setBranchFilter}>
+              <SelectTrigger className="h-9 text-xs w-[140px] border border-gray-300">
+                <SelectValue placeholder="All Branches" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-xs">All Branches</SelectItem>
+                {branches.map(branch => (
+                  <SelectItem key={branch} value={branch} className="text-xs">{branch}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-9 text-xs w-[140px] border border-gray-300">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-xs">All Status</SelectItem>
+                <SelectItem value="active" className="text-xs">Active</SelectItem>
+                <SelectItem value="inactive" className="text-xs">Inactive</SelectItem>
+                <SelectItem value="frequent" className="text-xs">Frequent (20+ orders)</SelectItem>
+                <SelectItem value="occasional" className="text-xs">Occasional (&lt;10 orders)</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 text-xs gap-1 border border-gray-300"
+              onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
+            >
+              <Filter className="h-3 w-3" />
+              More
+              <ChevronDown className="h-3 w-3" />
+            </Button>
           </div>
           
-          {/* Filters Row */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Select value={branchFilter} onValueChange={setBranchFilter}>
-                <SelectTrigger className="h-8 text-xs w-[140px]">
-                  <SelectValue placeholder="All Branches" />
+          {/* More Filters Row (shown when More is clicked) */}
+          {moreDropdownOpen && (
+            <div className="flex items-center gap-2 flex-wrap p-3 bg-gray-50 rounded-lg">
+              <Select value={timeFilter} onValueChange={setTimeFilter}>
+                <SelectTrigger className="w-32 h-9 text-xs border border-gray-300">
+                  <SelectValue placeholder="All Time" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">All Branches</SelectItem>
-                  {branches.map(branch => (
-                    <SelectItem key={branch} value={branch} className="text-xs">{branch}</SelectItem>
-                  ))}
+                  <SelectItem value="all">All Time</SelectItem>
+                  <SelectItem value="today">Active Today</SelectItem>
+                  <SelectItem value="week">Last 7 Days</SelectItem>
+                  <SelectItem value="month">Last 30 Days</SelectItem>
                 </SelectContent>
               </Select>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="h-8 text-xs w-[140px]">
-                  <SelectValue placeholder="All Status" />
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-36 h-9 text-xs border border-gray-300">
+                  <SelectValue placeholder="Sort by Name" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">All Status</SelectItem>
-                  <SelectItem value="active" className="text-xs">Active</SelectItem>
-                  <SelectItem value="inactive" className="text-xs">Inactive</SelectItem>
+                  <SelectItem value="name">Sort by Name</SelectItem>
+                  <SelectItem value="spend">Sort by Spend</SelectItem>
+                  <SelectItem value="orders">Sort by Orders</SelectItem>
                 </SelectContent>
               </Select>
 
-              <Button variant="ghost" size="sm" className="h-8 text-xs gap-1">
-                <MoreVertical className="h-3 w-3" />
-                More
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="h-9 text-xs border border-gray-300"
+              >
+                {sortOrder === 'asc' ? '↑ ASC' : '↓ DESC'}
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setTimeFilter('all');
+                  setSortBy('name');
+                  setSortOrder('asc');
+                }}
+                className="gap-1 h-9 text-xs border border-gray-300"
+              >
+                <X className="h-3 w-3" />
+                Clear All
               </Button>
             </div>
-
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>Show:</span>
-              <Select value={entriesPerPage} onValueChange={setEntriesPerPage}>
-                <SelectTrigger className="h-8 text-xs w-[70px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="5" className="text-xs">5</SelectItem>
-                  <SelectItem value="10" className="text-xs">10</SelectItem>
-                  <SelectItem value="25" className="text-xs">25</SelectItem>
-                  <SelectItem value="50" className="text-xs">50</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>entries</span>
-            </div>
-          </div>
+          )}
 
           <div className="text-xs text-muted-foreground">
             Showing {filteredCustomers.length} of {customerList.length} customers
@@ -252,12 +328,6 @@ export function Customers() {
               <TableHead>Customer</TableHead>
               <TableHead>
                 <div className="flex items-center gap-1">
-                  <Mail className="h-3 w-3" />
-                  Email
-                </div>
-              </TableHead>
-              <TableHead>
-                <div className="flex items-center gap-1">
                   <Phone className="h-3 w-3" />
                   Contact
                 </div>
@@ -269,7 +339,7 @@ export function Customers() {
                 </div>
               </TableHead>
               <TableHead>Orders</TableHead>
-              <TableHead>Total Spent</TableHead>
+              <TableHead>Total Spend</TableHead>
               <TableHead>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
@@ -282,7 +352,7 @@ export function Customers() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredCustomers.map((customer) => {
+            {filteredCustomers.slice(0, parseInt(entriesPerPage)).map((customer) => {
               const initials = customer.name.split(' ').map(n => n[0]).join('').substring(0, 2);
               return (
                 <TableRow key={customer.id} className="hover:bg-gray-50 transition-colors duration-200 text-xs">
@@ -315,10 +385,10 @@ export function Customers() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-muted-foreground">{customer.email}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-muted-foreground">{customer.phone}</span>
+                    <div>
+                      <p className="text-muted-foreground">{customer.phone}</p>
+                      <p className="text-[10px] text-muted-foreground">{customer.email}</p>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <span className="text-muted-foreground">{customer.branch || '-'}</span>
@@ -358,6 +428,17 @@ export function Customers() {
                       <Button
                         variant="ghost"
                         size="sm"
+                        className="h-7 w-7 p-0 hover:bg-green-50 hover:text-green-600"
+                        onClick={() => {
+                          setSelectedCustomer(customer);
+                          setDetailsModalOpen(true);
+                        }}
+                      >
+                        <Eye className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="h-7 w-7 p-0 hover:bg-blue-50 hover:text-blue-600"
                         onClick={() => {
                           setSelectedCustomer(customer);
@@ -391,16 +472,16 @@ export function Customers() {
             Showing {Math.min(filteredCustomers.length, parseInt(entriesPerPage))} of {filteredCustomers.length} entries
           </div>
           <div className="flex gap-1">
-            <Button variant="outline" size="sm" className="h-8 text-xs" disabled>
+            <Button variant="outline" size="sm" className="h-8 text-xs border border-gray-300" disabled>
               Previous
             </Button>
-            <Button variant="outline" size="sm" className="h-8 text-xs bg-red-500 text-white border-red-500">
+            <Button variant="outline" size="sm" className="h-8 text-xs bg-red-500 text-white border border-red-500">
               1
             </Button>
-            <Button variant="outline" size="sm" className="h-8 text-xs">
+            <Button variant="outline" size="sm" className="h-8 text-xs border border-gray-300">
               2
             </Button>
-            <Button variant="outline" size="sm" className="h-8 text-xs">
+            <Button variant="outline" size="sm" className="h-8 text-xs border border-gray-300">
               Next
             </Button>
           </div>
@@ -440,6 +521,15 @@ export function Customers() {
         title="Delete Customer"
         description={`Are you sure you want to delete ${selectedCustomer?.name}? This action cannot be undone.`}
       />
+
+      {/* Customer Details Modal */}
+      {selectedCustomer && (
+        <CustomerDetailsModal
+          open={detailsModalOpen}
+          onOpenChange={setDetailsModalOpen}
+          customer={selectedCustomer}
+        />
+      )}
     </div>
   );
 }

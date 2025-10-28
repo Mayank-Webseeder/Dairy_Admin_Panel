@@ -1,101 +1,105 @@
-import { useState, useEffect, useRef } from 'react';
-import { Search, X, File, ShoppingCart, Users, Settings } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { Search, LayoutDashboard, ShoppingCart, Package, Users, Building2, Bike, Settings, Home } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription } from './ui/dialog';
+import { Input } from './ui/input';
+import { cn } from './ui/utils';
 
 const searchItems = [
-  { name: 'Dashboard', icon: File, category: 'Pages' },
-  { name: 'Orders', icon: ShoppingCart, category: 'Pages' },
-  { name: 'Customers', icon: Users, category: 'Pages' },
-  { name: 'Profile Settings', icon: Settings, category: 'Settings' },
+  { id: '1', title: 'Dashboard', subtitle: 'Overview & Analytics', icon: LayoutDashboard, page: 'dashboard' },
+  { id: '2', title: 'User Management', subtitle: 'Manage users', icon: Users, page: 'users' },
+  { id: '3', title: 'Branch Management', subtitle: 'Manage branches', icon: Building2, page: 'branches' },
+  { id: '4', title: 'Menu Management', subtitle: 'Manage menu items', icon: Home, page: 'home-management' },
+  { id: '5', title: 'Orders', subtitle: 'View all orders', icon: ShoppingCart, page: 'orders' },
+  { id: '6', title: 'Products', subtitle: 'Manage products', icon: Package, page: 'products' },
+  { id: '7', title: 'Customers', subtitle: 'Customer list', icon: Users, page: 'customers' },
+  { id: '8', title: 'Delivery Staff', subtitle: 'Manage delivery team', icon: Bike, page: 'delivery-staff' },
+  { id: '9', title: 'Settings', subtitle: 'App settings', icon: Settings, page: 'settings' },
 ];
 
-export function SearchPopup({ isOpen, setIsOpen }) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const popupRef = useRef(null);
+export function SearchPopup({ open, onOpenChange, onNavigate }) {
+  const [query, setQuery] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  useEffect(() => {
-    const handleKeydown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsOpen(!isOpen);
-      }
-      if (e.key === 'Escape') {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [isOpen, setIsOpen]);
+  const filteredItems = query
+    ? searchItems.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query.toLowerCase()) ||
+          item.subtitle.toLowerCase().includes(query.toLowerCase())
+      )
+    : searchItems;
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [setIsOpen]);
-
-  const filteredItems = searchItems.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSelect = (page) => {
+    onNavigate(page);
+    onOpenChange(false);
+    setQuery('');
+    setSelectedIndex(0);
+  };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20"
-        >
-          <motion.div
-            ref={popupRef}
-            initial={{ scale: 0.9, y: -20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: -20 }}
-            className="w-full max-w-lg bg-white rounded-lg shadow-xl overflow-hidden"
-          >
-            <div className="p-4 border-b flex items-center">
-              <Search className="h-5 w-5 text-gray-400 mr-3" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full text-lg outline-none"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                autoFocus
-              />
-              <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
-                <X className="h-5 w-5" />
-              </button>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl p-0 gap-0">
+        <DialogDescription className="sr-only">
+          Search for pages and navigate quickly through the admin panel
+        </DialogDescription>
+        <div className="flex items-center border-b px-4 py-3">
+          <Search className="h-5 w-5 text-muted-foreground mr-3" />
+          <Input
+            placeholder="Search modules..."
+            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoFocus
+          />
+        </div>
+        
+        <div className="max-h-[400px] overflow-y-auto">
+          <div className="p-2">
+            <div className="text-xs text-muted-foreground px-3 py-2">
+              {filteredItems.length} results
             </div>
-            <div className="p-4 max-h-96 overflow-y-auto">
-              {filteredItems.length > 0 ? (
-                filteredItems.map((item, index) => (
-                  <div key={index} className="flex items-center p-3 hover:bg-gray-100 rounded-lg cursor-pointer">
-                    <item.icon className="h-5 w-5 text-gray-500 mr-4" />
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">{item.category}</p>
-                    </div>
+            {filteredItems.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleSelect(item.page)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-3 rounded-md hover:bg-blue-50 transition-colors text-left group",
+                    index === selectedIndex && "bg-blue-50"
+                  )}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                >
+                  <div className="h-10 w-10 rounded-lg bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
+                    <Icon className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
                   </div>
-                ))
-              ) : (
-                <p className="text-center text-gray-500 py-4">No results found</p>
-              )}
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{item.title}</p>
+                    <p className="text-xs text-muted-foreground">{item.subtitle}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="border-t px-4 py-3 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <kbd className="px-2 py-1 bg-muted rounded">↑</kbd>
+              <kbd className="px-2 py-1 bg-muted rounded">↓</kbd>
+              <span className="ml-1">Navigate</span>
             </div>
-            <div className="p-3 bg-gray-50 border-t text-xs text-gray-500">
-              Press{' '}
-              <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">
-                Ctrl+K
-              </kbd>{' '}
-              to search
+            <div className="flex items-center gap-1">
+              <kbd className="px-2 py-1 bg-muted rounded">↵</kbd>
+              <span className="ml-1">Open</span>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            <div className="flex items-center gap-1">
+              <kbd className="px-2 py-1 bg-muted rounded">ESC</kbd>
+              <span className="ml-1">Close</span>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

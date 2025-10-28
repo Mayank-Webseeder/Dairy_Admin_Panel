@@ -34,10 +34,6 @@ export function Dashboard() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2>Dashboard</h2>
-          <p className="text-muted-foreground">Overview</p>
-        </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="transition-all duration-200">Reset Layout</Button>
           <Button variant="outline" className="transition-all duration-200">
@@ -125,21 +121,23 @@ export function Dashboard() {
               />
               <Line 
                 type="monotone" 
-                dataKey="income" 
-                stroke="#ef4444" 
-                strokeWidth={2} 
-                name="Income"
-                animationDuration={800}
-                dot={{ r: 3 }}
-              />
-              <Line 
-                type="monotone" 
                 dataKey="expenses" 
                 stroke="#9ca3af" 
                 strokeWidth={2} 
                 name="Expenses"
                 animationDuration={800}
-                dot={{ r: 3 }}
+                animationBegin={0}
+                dot={{ r: 3, animationBegin: 800, animationDuration: 400 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="income" 
+                stroke="#ef4444" 
+                strokeWidth={2} 
+                name="Income"
+                animationDuration={800}
+                animationBegin={0}
+                dot={{ r: 3, animationBegin: 800, animationDuration: 400 }}
               />
             </LineChart>
           </ResponsiveContainer>

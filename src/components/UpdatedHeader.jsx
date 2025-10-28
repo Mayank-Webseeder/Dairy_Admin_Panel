@@ -1,76 +1,305 @@
-import { Search, Bell, User, Settings, LogOut, Menu } from 'lucide-react';
+import { Bell, Search, ChevronDown, User, Settings, HelpCircle, Globe, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Badge } from './ui/badge';
+import { notifications } from '../lib/mockData';
+import { useState, useEffect } from 'react';
+import { cn } from './ui/utils';
+import { AlertTriangle, CheckCircle, Info, AlertCircle } from 'lucide-react';
+import { Separator } from './ui/separator';
+import { SearchPopup } from './SearchPopup';
 
-export function UpdatedHeader({ onToggleSidebar, onSearchClick, profileName, profilePhoto, onLogout }) {
-  const userInitials = profileName.split(' ').map(n => n[0]).join('');
+const notificationIcons = {
+  alert: AlertTriangle,
+  success: CheckCircle,
+  info: Info,
+  warning: AlertCircle,
+};
+
+const notificationColors = {
+  alert: 'text-red-500',
+  success: 'text-green-500',
+  info: 'text-blue-500',
+  warning: 'text-yellow-600',
+};
+
+export function UpdatedHeader({ 
+  onNavigate,
+  onLogout, 
+  profilePhoto, 
+  userName = 'John Doe', 
+  userRole = 'Super Admin',
+  currentPage = 'Dashboard',
+  pageTitle,
+  pageSubtitle
+}) {
+  const [notifs, setNotifs] = useState(notifications);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const unreadCount = notifs.filter(n => !n.isRead).length;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const markAllAsRead = () => {
+    setNotifs(notifs.map(n => ({ ...n, isRead: true })));
+  };
+
+  const handleProfileClick = () => {
+    setProfileOpen(false);
+    onNavigate('profile');
+  };
+
+  const handleSettingsClick = () => {
+    setProfileOpen(false);
+    onNavigate('settings');
+  };
+
+  const formattedTime = currentTime.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  const formattedDate = currentTime.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
 
   return (
-    <header className="bg-white border-b h-16 flex items-center justify-between px-6 sticky top-0 z-30">
+    <header className="h-12 border-b border-border bg-white px-4 flex items-center justify-between sticky top-0 z-20 transition-all duration-300 text-xs">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="md:hidden">
-          <Menu className="h-6 w-6" />
-        </Button>
-        <h1 className="text-lg font-semibold hidden md:block">Dashboard</h1>
+        {/* Page Title */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-900">{pageTitle || currentPage}</span>
+          <span className="text-gray-300">/</span>
+          <span className="text-sm text-red-500">Management</span>
+        </div>
       </div>
-      
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={onSearchClick}>
-          <Search className="h-5 w-5 text-gray-500" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <Bell className="h-5 w-5 text-gray-500" />
-        </Button>
+
+      <div className="flex items-center gap-4 flex-1 max-w-xl mx-auto">
+        {/* Date and Time */}
+        <span className="text-sm text-muted-foreground hidden sm:flex items-center gap-2 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+            {formattedTime}
+          </span>
+          <span className="mx-1">•</span>
+          {formattedDate}
+        </span>
         
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-3">
-              <Avatar className="h-9 w-9">
-                {profilePhoto && <AvatarImage src={profilePhoto} alt={profileName} />}
-                <AvatarFallback className="bg-red-500 text-white">
-                  {userInitials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-left hidden md:block">
-                <p className="text-sm font-medium">{profileName}</p>
-                <p className="text-xs text-muted-foreground">Super Admin</p>
-              </div>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{profileName}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  admin@dairy.com
-                </p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Search Box */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            placeholder="Search orders, customers, menu items..."
+            className="pl-10 bg-muted/50 border border-gray-300 cursor-pointer transition-all duration-200"
+            readOnly
+            onClick={() => setSearchOpen(true)}
+          />
+        </div>
       </div>
+
+      <div className="flex items-center gap-4">
+
+        {/* Notifications Button */}
+        <div className="relative">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="relative"
+            onClick={() => setNotificationOpen(!notificationOpen)}
+          >
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
+                {unreadCount}
+              </Badge>
+            )}
+          </Button>
+
+          {/* Notification Dropdown */}
+          {notificationOpen && (
+            <>
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setNotificationOpen(false)}
+              />
+              <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="flex items-center justify-between p-4 border-b">
+                  <h3>Notifications</h3>
+                  {unreadCount > 0 && (
+                    <Badge variant="destructive" className="bg-red-500">
+                      {unreadCount} new
+                    </Badge>
+                  )}
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifs.map((notification) => {
+                    const Icon = notificationIcons[notification.type];
+                    return (
+                      <div
+                        key={notification.id}
+                        className={cn(
+                          "p-4 border-b last:border-b-0 hover:bg-muted/50 transition-colors",
+                          !notification.isRead && "bg-red-50/50"
+                        )}
+                      >
+                        <div className="flex gap-3">
+                          <div className={cn("mt-0.5", notificationColors[notification.type])}>
+                            <Icon className="h-5 w-5" />
+                          </div>
+                          <div className="flex-1 space-y-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <p className="font-medium">{notification.title}</p>
+                              {!notification.isRead && (
+                                <span className="h-2 w-2 rounded-full bg-red-500 mt-1.5"></span>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">{notification.message}</p>
+                            <p className="text-xs text-muted-foreground">{notification.time}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="p-3 border-t">
+                  <Button
+                    variant="ghost"
+                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={markAllAsRead}
+                  >
+                    Mark all as read
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Profile Dropdown */}
+        <div className="relative">
+          <button 
+            className="flex items-center gap-3 pl-3 border-l h-auto py-2 hover:bg-gray-50 rounded-md transition-all duration-200 cursor-pointer"
+            onClick={() => setProfileOpen(!profileOpen)}
+          >
+            <Avatar className="h-9 w-9">
+              {profilePhoto ? (
+                <AvatarImage src={profilePhoto} alt={userName} />
+              ) : (
+                <div className="h-full w-full bg-gray-900 flex items-center justify-center">
+                  <User className="h-5 w-5 text-white" />
+                </div>
+              )}
+              <AvatarFallback className="bg-gray-900 text-white">
+                <User className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden sm:block text-left">
+              <p className="text-sm">{userName}</p>
+              <p className="text-xs text-muted-foreground">{userRole}</p>
+            </div>
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          </button>
+
+          {/* Profile Dropdown Menu */}
+          {profileOpen && (
+            <>
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setProfileOpen(false)}
+              />
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                {/* Profile Header */}
+                <div className="p-4 bg-gray-50">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-12 w-12">
+                      {profilePhoto ? (
+                        <AvatarImage src={profilePhoto} alt={userName} />
+                      ) : (
+                        <div className="h-full w-full bg-gray-900 flex items-center justify-center">
+                          <User className="h-6 w-6 text-white" />
+                        </div>
+                      )}
+                      <AvatarFallback className="bg-gray-900 text-white">
+                        <User className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{userName}</p>
+                      <p className="text-sm text-muted-foreground truncate">{userRole}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Menu Items */}
+                <div className="p-2">
+                  <button
+                    onClick={handleProfileClick}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <User className="h-4 w-4 text-gray-600" />
+                    <span>My Profile</span>
+                  </button>
+                  
+                  <button
+                    onClick={handleSettingsClick}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <Settings className="h-4 w-4 text-gray-600" />
+                    <span>Account Settings</span>
+                  </button>
+                  
+                  <button
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <HelpCircle className="h-4 w-4 text-gray-600" />
+                    <span>Help & Support</span>
+                  </button>
+                  
+                  <button
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <Globe className="h-4 w-4 text-gray-600" />
+                    <span>Language</span>
+                  </button>
+                </div>
+
+                <Separator />
+
+                {/* Sign Out */}
+                <div className="p-2">
+                  <button
+                    onClick={onLogout}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-50 text-red-600 transition-all duration-200 text-left"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign out</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Search Popup */}
+      <SearchPopup 
+        open={searchOpen} 
+        onOpenChange={setSearchOpen}
+        onNavigate={onNavigate}
+      />
     </header>
   );
 }

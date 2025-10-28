@@ -1,128 +1,255 @@
-import { Home, ShoppingBag, ShoppingCart, Users, Building2, Bike, Settings, LifeBuoy, X, ChevronDown, UserCog, FileText, MonitorPlay } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { 
+  LayoutDashboard, 
+  ShoppingCart, 
+  Package, 
+  Users, 
+  ShoppingBag,
+  Settings,
+  LogOut,
+  Bike,
+  Home,
+  Building2,
+  UserCog,
+  FileText,
+  Bell,
+  ChevronDown,
+  TrendingUp
+} from 'lucide-react';
+import { cn } from '../components/ui/utils';
 
-const menuItems = [
-  { icon: Home, label: 'Dashboard', page: 'dashboard' },
-  {
-    icon: UserCog,
-    label: 'Management',
-    subItems: [
-      { icon: ShoppingBag, label: 'Products', page: 'products' },
-      { icon: ShoppingCart, label: 'Orders', page: 'orders' },
-      { icon: Users, label: 'Customers', page: 'customers' },
-      { icon: Building2, label: 'Branches', page: 'branches' },
-      { icon: Bike, label: 'Delivery Staff', page: 'delivery-staff' },
-      { icon: Users, label: 'User Management', page: 'user-management' },
-    ],
-  },
-  {
-    icon: MonitorPlay,
-    label: 'CMS',
-    subItems: [
-        { icon: FileText, label: 'Home Page', page: 'home-page' },
-    ]
-  }
-];
+export function SlidingSidebar({ currentPage, onPageChange, onLogout }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [openMenus, setOpenMenus] = useState({
+    management: true,
+    cms: false
+  });
 
-export function SlidingSidebar({ isOpen, setIsOpen, currentPage, setCurrentPage }) {
-  const [openMenu, setOpenMenu] = useState('Management');
-
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-    if (window.innerWidth < 768) {
-      setIsOpen(false);
-    }
-  };
-  
-  const NavLink = ({ item }) => {
-    const isSelected = currentPage === item.page;
-    return (
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          handleNavigation(item.page);
-        }}
-        className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
-          isSelected
-            ? 'bg-red-500 text-white shadow-sm'
-            : 'text-gray-700 hover:bg-gray-100'
-        }`}
-      >
-        <item.icon className={`h-4 w-4 ${isSelected ? 'text-white' : 'text-gray-500'}`} />
-        <span className="font-medium">{item.label}</span>
-      </a>
-    );
+  const toggleMenu = (menu) => {
+    setOpenMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
   };
 
-  const CollapsibleMenu = ({ item }) => {
-    const isOpen = openMenu === item.label;
-    return (
-      <div>
-        <button
-          onClick={() => setOpenMenu(isOpen ? null : item.label)}
-          className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
-        >
-          <div className="flex items-center gap-3">
-            <item.icon className="h-4 w-4 text-gray-500" />
-            <span className="font-medium">{item.label}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-        </button>
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden pl-8"
-            >
-              <div className="pt-2 space-y-1">
-                {item.subItems.map(subItem => <NavLink key={subItem.page} item={subItem} />)}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  };
-  
+  const managementItems = [
+    { icon: ShoppingBag, label: 'Products', id: 'products' },
+    { icon: ShoppingCart, label: 'Orders', id: 'orders' },
+    { icon: Users, label: 'Customers', id: 'customers' },
+    { icon: Building2, label: 'Branches', id: 'branches' },
+    { icon: Bike, label: 'Delivery Staff', id: 'delivery-staff' },
+    { icon: UserCog, label: 'User Management', id: 'user-management' },
+  ];
+
+  const cmsItems = [
+    { icon: FileText, label: 'Home Page', id: 'home-page' },
+  ];
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-            onClick={() => setIsOpen(false)}
-          />
-          <motion.aside
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 h-full w-64 bg-white border-r z-50 flex flex-col"
-          >
-            <div className="p-4 border-b flex items-center justify-between">
-              <h1 className="text-xl font-bold text-red-500">🥛 DairyDash</h1>
-              <button onClick={() => setIsOpen(false)} className="md:hidden">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <nav className="flex-1 px-4 py-4 space-y-2">
-              {menuItems.map((item) => 
-                item.subItems 
-                  ? <CollapsibleMenu key={item.label} item={item} />
-                  : <NavLink key={item.page} item={item} />
-              )}
-            </nav>
-          </motion.aside>
-        </>
+    <div
+      className={cn(
+        "fixed left-0 top-0 h-full bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col z-50 shadow-lg",
+        isExpanded ? "w-64" : "w-20"
       )}
-    </AnimatePresence>
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
+    >
+      {/* Logo */}
+      <div className="h-12 flex items-center px-4 border-b border-gray-200 bg-white">
+        {isExpanded ? (
+          <span className="text-red-500 whitespace-nowrap transition-opacity duration-300 text-sm font-semibold">
+            DairyDash
+          </span>
+        ) : (
+          <div className="h-8 w-8 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 mx-auto">
+            <Package className="h-4 w-4 text-white" />
+          </div>
+        )}
+      </div>
+
+      {/* Welcome Message */}
+      {isExpanded && (
+        <div className="px-4 py-3 border-b border-gray-200 bg-white">
+          <p className="text-xs text-gray-600">Welcome Admin!</p>
+        </div>
+      )}
+
+      {/* Navigation */}
+      <nav className="flex-1 py-4 px-3 overflow-y-auto">
+        <div className="space-y-1">
+          {/* Dashboard */}
+          <button
+            onClick={() => onPageChange('dashboard')}
+            className={cn(
+              "w-full flex items-center gap-3 rounded-lg transition-all duration-200 text-xs",
+              isExpanded ? "px-3 py-2" : "px-0 py-2 justify-center",
+              currentPage === 'dashboard'
+                ? "bg-red-500 text-white" 
+                : "text-gray-600 hover:bg-gray-50"
+            )}
+          >
+            <Home className={cn("h-4 w-4 flex-shrink-0 transition-colors duration-200")} />
+            {isExpanded && (
+              <span className="whitespace-nowrap transition-opacity duration-300">Dashboard</span>
+            )}
+          </button>
+
+          {/* Management Section */}
+          <div className="space-y-1">
+            <button
+              onClick={() => isExpanded && toggleMenu('management')}
+              className={cn(
+                "w-full flex items-center gap-3 rounded-lg transition-all duration-200 text-xs text-gray-600 hover:bg-gray-50",
+                isExpanded ? "px-3 py-2" : "px-0 py-2 justify-center"
+              )}
+            >
+              <UserCog className="h-4 w-4 flex-shrink-0" />
+              {isExpanded && (
+                <>
+                  <span className="whitespace-nowrap flex-1 text-left">Management</span>
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    openMenus.management && "rotate-180"
+                  )} />
+                </>
+              )}
+            </button>
+            
+            {isExpanded && openMenus.management && (
+              <div className="ml-6 space-y-1">
+                {managementItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentPage === item.id;
+                  
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => onPageChange(item.id)}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-xs",
+                        isActive 
+                          ? "bg-red-50 text-red-600" 
+                          : "text-gray-600 hover:bg-gray-50"
+                      )}
+                    >
+                      <Icon className={cn("h-4 w-4 flex-shrink-0", isActive && "text-red-600")} />
+                      <span className="whitespace-nowrap">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* CMS Section */}
+          <div className="space-y-1">
+            <button
+              onClick={() => isExpanded && toggleMenu('cms')}
+              className={cn(
+                "w-full flex items-center gap-3 rounded-lg transition-all duration-200 text-xs text-gray-600 hover:bg-gray-50",
+                isExpanded ? "px-3 py-2" : "px-0 py-2 justify-center"
+              )}
+            >
+              <FileText className="h-4 w-4 flex-shrink-0" />
+              {isExpanded && (
+                <>
+                  <span className="whitespace-nowrap flex-1 text-left">CMS</span>
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    openMenus.cms && "rotate-180"
+                  )} />
+                </>
+              )}
+            </button>
+            
+            {isExpanded && openMenus.cms && (
+              <div className="ml-6 space-y-1">
+                {cmsItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentPage === item.id;
+                  
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => onPageChange(item.id)}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-xs",
+                        isActive 
+                          ? "bg-red-50 text-red-600" 
+                          : "text-gray-600 hover:bg-gray-50"
+                      )}
+                    >
+                      <Icon className={cn("h-4 w-4 flex-shrink-0", isActive && "text-red-600")} />
+                      <span className="whitespace-nowrap">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Reports */}
+          <button
+            onClick={() => onPageChange('reports')}
+            className={cn(
+              "w-full flex items-center gap-3 rounded-lg transition-all duration-200 text-xs",
+              isExpanded ? "px-3 py-2" : "px-0 py-2 justify-center",
+              currentPage === 'reports'
+                ? "bg-red-50 text-red-600" 
+                : "text-gray-600 hover:bg-gray-50"
+            )}
+          >
+            <TrendingUp className={cn("h-4 w-4 flex-shrink-0", currentPage === 'reports' && "text-red-600")} />
+            {isExpanded && (
+              <span className="whitespace-nowrap transition-opacity duration-300">Reports</span>
+            )}
+          </button>
+
+          {/* Push Notifications */}
+          <button
+            onClick={() => onPageChange('notifications')}
+            className={cn(
+              "w-full flex items-center gap-3 rounded-lg transition-all duration-200 text-xs",
+              isExpanded ? "px-3 py-2" : "px-0 py-2 justify-center",
+              currentPage === 'notifications'
+                ? "bg-red-50 text-red-600" 
+                : "text-gray-600 hover:bg-gray-50"
+            )}
+          >
+            <Bell className={cn("h-4 w-4 flex-shrink-0", currentPage === 'notifications' && "text-red-600")} />
+            {isExpanded && (
+              <span className="whitespace-nowrap transition-opacity duration-300">Push Notifications</span>
+            )}
+          </button>
+
+          {/* Settings */}
+          <button
+            onClick={() => onPageChange('updated-settings')}
+            className={cn(
+              "w-full flex items-center gap-3 rounded-lg transition-all duration-200 text-xs",
+              isExpanded ? "px-3 py-2" : "px-0 py-2 justify-center",
+              currentPage === 'updated-settings'
+                ? "bg-red-50 text-red-600" 
+                : "text-gray-600 hover:bg-gray-50"
+            )}
+          >
+            <Settings className={cn("h-4 w-4 flex-shrink-0", currentPage === 'updated-settings' && "text-red-600")} />
+            {isExpanded && (
+              <span className="whitespace-nowrap transition-opacity duration-300">Settings</span>
+            )}
+          </button>
+        </div>
+      </nav>
+
+      {/* Logout Button */}
+      <div className="p-3 border-t border-gray-200">
+        <button
+          onClick={onLogout}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-200 text-xs"
+        >
+          <LogOut className="h-4 w-4 flex-shrink-0" />
+          {isExpanded && (
+            <span className="whitespace-nowrap transition-opacity duration-300">Logout</span>
+          )}
+        </button>
+      </div>
+    </div>
   );
 }
