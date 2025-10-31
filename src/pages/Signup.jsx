@@ -4,7 +4,7 @@ import { slideshowImages } from '../assets/images';
 import { registerUser } from '../lib/auth';
 
 // Import the CSS file
-import '../styles/signup.css';
+import '../styles/Signup.css';
 
 const slidesData = [
   {
