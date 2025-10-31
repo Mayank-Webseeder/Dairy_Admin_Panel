@@ -35,7 +35,7 @@ export function BranchManagement() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
-  
+
   // More filter states
   const [performanceFilter, setPerformanceFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState('all');
@@ -47,7 +47,7 @@ export function BranchManagement() {
       branch.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || branch.status === statusFilter;
     const matchesCity = cityFilter === 'all' || branch.city === cityFilter;
-    
+
     // Performance filter
     let matchesPerformance = true;
     if (performanceFilter !== 'all') {
@@ -60,7 +60,7 @@ export function BranchManagement() {
         matchesPerformance = performancePercent < 60;
       }
     }
-    
+
     return matchesSearch && matchesStatus && matchesCity && matchesPerformance;
   }).sort((a, b) => {
     // Apply sorting
@@ -71,7 +71,7 @@ export function BranchManagement() {
     else if (sortBy === 'revenue') compareValue = a.revenue - b.revenue;
     else if (sortBy === 'date') compareValue = 0; // Add date field if needed
     else if (sortBy === 'contact') compareValue = (a.contactNumber || '').localeCompare(b.contactNumber || '');
-    
+
     return sortOrder === 'asc' ? compareValue : -compareValue;
   });
 
@@ -91,8 +91,8 @@ export function BranchManagement() {
   };
 
   const toggleBranchStatus = (branchId) => {
-    setBranchList(branchList.map(b => 
-      b.id === branchId 
+    setBranchList(branchList.map(b =>
+      b.id === branchId
         ? { ...b, status: b.status === 'active' ? 'inactive' : 'active' }
         : b
     ));
@@ -120,14 +120,14 @@ export function BranchManagement() {
     <div className="p-4">
       <div className="mb-4 flex items-center justify-end">
         <div className="flex gap-2">
-          <Button 
+          <Button
             variant="outline"
             size="sm"
             className="transition-all duration-200 h-9 text-xs border border-gray-300"
           >
             🔄 Refresh
           </Button>
-          <Button 
+          <Button
             variant="outline"
             size="sm"
             onClick={handleExport}
@@ -135,7 +135,7 @@ export function BranchManagement() {
           >
             Export
           </Button>
-          <Button 
+          <Button
             size="sm"
             className="bg-red-500 hover:bg-red-600 transition-all duration-200 h-9 text-xs border border-red-500"
             onClick={() => setAddModalOpen(true)}
@@ -150,7 +150,7 @@ export function BranchManagement() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Branches</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Branches</p>
               <h3 className="text-lg">{totalBranches}</h3>
             </div>
             <div className="h-9 w-9 bg-blue-50 rounded-full flex items-center justify-center">
@@ -161,7 +161,7 @@ export function BranchManagement() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Active Branches</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Active Branches</p>
               <h3 className="text-lg">{activeBranches}</h3>
             </div>
             <div className="h-9 w-9 bg-green-50 rounded-full flex items-center justify-center">
@@ -172,7 +172,7 @@ export function BranchManagement() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Cities</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Cities</p>
               <h3 className="text-lg">{cities}</h3>
             </div>
             <div className="h-9 w-9 bg-purple-50 rounded-full flex items-center justify-center">
@@ -183,7 +183,7 @@ export function BranchManagement() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Avg Performance</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Avg Performance</p>
               <h3 className="text-lg">₹{avgPerformance}K</h3>
             </div>
             <div className="h-9 w-9 bg-orange-50 rounded-full flex items-center justify-center">
@@ -230,9 +230,9 @@ export function BranchManagement() {
               </SelectContent>
             </Select>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-9 text-xs gap-1 border border-gray-300"
               onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
             >
@@ -361,8 +361,8 @@ export function BranchManagement() {
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-green-500 rounded-full" 
+                      <div
+                        className="h-full bg-green-500 rounded-full"
                         style={{ width: `${Math.min((branch.revenue / 150000) * 100, 100)}%` }}
                       />
                     </div>
@@ -381,8 +381,8 @@ export function BranchManagement() {
                   <Badge
                     variant="secondary"
                     className={`text-xs h-5 ${
-                      branch.status === 'active' 
-                        ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]' 
+                      branch.status === 'active'
+                        ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]'
                         : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100'
                     }`}
                   >
@@ -407,8 +407,8 @@ export function BranchManagement() {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex gap-1 justify-end">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="icon"
                       className="h-8 w-8 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
                       onClick={() => {
@@ -418,8 +418,8 @@ export function BranchManagement() {
                     >
                       <Edit2 className="h-3 w-3" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="icon"
                       className="h-8 w-8 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                       onClick={() => {

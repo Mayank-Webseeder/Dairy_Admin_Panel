@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import * as TogglePrimitive from "@radix-ui/react-toggle@1.1.2";
@@ -28,7 +28,12 @@ const toggleVariants = cva(
   },
 );
 
-function Toggle({ className, variant, size, ...props }) {
+function Toggle({
+  className,
+  variant,
+  size,
+  ...props
+}) {
   return (
     <TogglePrimitive.Root
       data-slot="toggle"

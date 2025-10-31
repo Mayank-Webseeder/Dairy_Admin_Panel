@@ -28,11 +28,11 @@ export function UpdatedSettings() {
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="business-name">Business Name</Label>
-                <Input id="business-name" defaultValue="DairyDash" />
+                <Input id="business-name" defaultValue="Dynasty Premium" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue="admin@dairydash.com" />
+                <Input id="email" type="email" defaultValue="admin@dynastypremium.com" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="phone">Phone</Label>

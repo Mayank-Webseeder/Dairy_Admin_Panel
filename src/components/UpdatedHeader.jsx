@@ -59,7 +59,7 @@ export function UpdatedHeader({
 
   const handleSettingsClick = () => {
     setProfileOpen(false);
-    onNavigate('settings');
+    onNavigate('updated-settings');
   };
 
   const formattedTime = currentTime.toLocaleTimeString('en-US', {
@@ -196,13 +196,10 @@ export function UpdatedHeader({
               {profilePhoto ? (
                 <AvatarImage src={profilePhoto} alt={userName} />
               ) : (
-                <div className="h-full w-full bg-gray-900 flex items-center justify-center">
-                  <User className="h-5 w-5 text-white" />
-                </div>
+                <AvatarFallback className="bg-gray-900 text-white">
+                  <User className="h-5 w-5" />
+                </AvatarFallback>
               )}
-              <AvatarFallback className="bg-gray-900 text-white">
-                <User className="h-5 w-5" />
-              </AvatarFallback>
             </Avatar>
             <div className="hidden sm:block text-left">
               <p className="text-sm">{userName}</p>
@@ -226,13 +223,10 @@ export function UpdatedHeader({
                       {profilePhoto ? (
                         <AvatarImage src={profilePhoto} alt={userName} />
                       ) : (
-                        <div className="h-full w-full bg-gray-900 flex items-center justify-center">
-                          <User className="h-6 w-6 text-white" />
-                        </div>
+                        <AvatarFallback className="bg-gray-900 text-white">
+                          <User className="h-6 w-6" />
+                        </AvatarFallback>
                       )}
-                      <AvatarFallback className="bg-gray-900 text-white">
-                        <User className="h-6 w-6" />
-                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{userName}</p>

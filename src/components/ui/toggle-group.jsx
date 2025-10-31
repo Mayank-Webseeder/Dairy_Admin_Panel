@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group@1.1.2";
@@ -11,7 +11,13 @@ const ToggleGroupContext = React.createContext({
   variant: "default",
 });
 
-function ToggleGroup({ className, variant, size, children, ...props }) {
+function ToggleGroup({
+  className,
+  variant,
+  size,
+  children,
+  ...props
+}) {
   return (
     <ToggleGroupPrimitive.Root
       data-slot="toggle-group"
@@ -30,7 +36,13 @@ function ToggleGroup({ className, variant, size, children, ...props }) {
   );
 }
 
-function ToggleGroupItem({ className, children, variant, size, ...props }) {
+function ToggleGroupItem({
+  className,
+  children,
+  variant,
+  size,
+  ...props
+}) {
   const context = React.useContext(ToggleGroupContext);
 
   return (

@@ -19,6 +19,8 @@ import {
 } from '../components/ui/table';
 import { Search, Eye, Edit2, Copy, Trash2 } from 'lucide-react';
 import { CreateNotificationModal } from '../components/modals/CreateNotificationModal';
+import { EditNotificationModal } from '../components/modals/EditNotificationModal';
+import { DeleteConfirmationModal } from '../components/modals/DeleteConfirmationModal';
 
 export function PushNotifications() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,8 +29,11 @@ export function PushNotifications() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState('all');
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
 
-  const notifications = [
+  const [notifications, setNotifications] = useState([
     {
       id: '1',
       title: 'Weekend Special Offer!',
@@ -81,7 +86,7 @@ export function PushNotifications() {
       date: '3 Oct 2025',
       time: '12:45 PM',
     },
-  ];
+  ]);
 
   const filteredNotifications = notifications.filter(notif => {
     const matchesSearch = notif.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -89,7 +94,7 @@ export function PushNotifications() {
     const matchesAudience = audienceFilter === 'all' || notif.audience === audienceFilter;
     const matchesType = typeFilter === 'all' || notif.type === typeFilter;
     const matchesStatus = statusFilter === 'all' || notif.status === statusFilter;
-    
+
     return matchesSearch && matchesAudience && matchesType && matchesStatus;
   });
 
@@ -109,22 +114,64 @@ export function PushNotifications() {
   };
 
   const handleEdit = (id) => {
-    console.log('Editing notification:', id);
+    const notification = notifications.find(n => n.id === id);
+    if (notification) {
+      setSelectedNotification(notification);
+      setEditModalOpen(true);
+    }
+  };
+
+  const handleSaveEdit = (updatedData) => {
+    if (selectedNotification) {
+      setNotifications(notifications.map(n =>
+        n.id === selectedNotification.id
+          ? { ...n, ...updatedData }
+          : n
+      ));
+      setEditModalOpen(false);
+      setSelectedNotification(null);
+    }
   };
 
   const handleDuplicate = (id) => {
-    console.log('Duplicating notification:', id);
+    const notification = notifications.find(n => n.id === id);
+    if (notification) {
+      const duplicated = {
+        ...notification,
+        id: Date.now().toString(),
+        title: `${notification.title} (Copy)`,
+        status: 'draft',
+        delivered: 0,
+        opened: 0,
+        clickRate: '0.0%',
+        date: 'N/A',
+        time: '',
+      };
+      setNotifications([...notifications, duplicated]);
+    }
   };
 
   const handleDelete = (id) => {
-    console.log('Deleting notification:', id);
+    const notification = notifications.find(n => n.id === id);
+    if (notification) {
+      setSelectedNotification(notification);
+      setDeleteModalOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedNotification) {
+      setNotifications(notifications.filter(n => n.id !== selectedNotification.id));
+      setDeleteModalOpen(false);
+      setSelectedNotification(null);
+    }
   };
 
   return (
     <div className="p-4">
       {/* Header Controls */}
       <div className="mb-4 flex items-center justify-end gap-2">
-        <Button 
+        <Button
           variant="outline"
           size="sm"
           onClick={handleRefresh}
@@ -132,7 +179,7 @@ export function PushNotifications() {
         >
           🔄 Refresh
         </Button>
-        <Button 
+        <Button
           size="sm"
           onClick={() => setCreateModalOpen(true)}
           className="h-9 text-xs bg-red-500 hover:bg-red-600 border border-red-500"
@@ -146,7 +193,7 @@ export function PushNotifications() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Sent</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Sent</p>
               <h3 className="text-lg">{stats.totalSent}</h3>
             </div>
             <div className="text-red-500 text-xl">📧</div>
@@ -156,7 +203,7 @@ export function PushNotifications() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Scheduled</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Scheduled</p>
               <h3 className="text-lg">{stats.scheduled}</h3>
             </div>
             <div className="text-orange-500 text-xl">⏰</div>
@@ -166,7 +213,7 @@ export function PushNotifications() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Drafts</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Drafts</p>
               <h3 className="text-lg">{stats.drafts}</h3>
             </div>
             <div className="text-gray-500 text-xl">📝</div>
@@ -176,7 +223,7 @@ export function PushNotifications() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Avg Click Rate</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Avg Click Rate</p>
               <h3 className="text-lg">{stats.avgClickRate}</h3>
             </div>
             <div className="text-purple-500 text-xl">📊</div>
@@ -403,6 +450,25 @@ export function PushNotifications() {
         open={createModalOpen}
         onOpenChange={setCreateModalOpen}
       />
+
+      {selectedNotification && (
+        <>
+          <EditNotificationModal
+            open={editModalOpen}
+            onOpenChange={setEditModalOpen}
+            onSave={handleSaveEdit}
+            notification={selectedNotification}
+          />
+
+          <DeleteConfirmationModal
+            open={deleteModalOpen}
+            onOpenChange={setDeleteModalOpen}
+            onConfirm={handleConfirmDelete}
+            title="Delete Notification"
+            description={`Are you sure you want to delete "${selectedNotification.title}"? This action cannot be undone.`}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -22,7 +22,7 @@ export function Products() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
-  
+
   // Filter states
   const [priceFilter, setPriceFilter] = useState('all');
   const [popularityFilter, setPopularityFilter] = useState('all');
@@ -34,18 +34,18 @@ export function Products() {
     const matchesBranch = selectedBranch === 'all' || p.branch === selectedBranch;
     const matchesCategory = selectedCategory === 'all' || p.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     // Status filter
     let matchesStatus = true;
     if (selectedStatus === 'instock') matchesStatus = p.stock > 0;
     else if (selectedStatus === 'outofstock') matchesStatus = p.stock === 0;
-    
+
     // Price filter
     let matchesPrice = true;
     if (priceFilter === 'low') matchesPrice = p.price >= 0 && p.price < 100;
     else if (priceFilter === 'medium') matchesPrice = p.price >= 100 && p.price < 300;
     else if (priceFilter === 'high') matchesPrice = p.price >= 300;
-    
+
     return matchesBranch && matchesCategory && matchesSearch && matchesStatus && matchesPrice;
   }).sort((a, b) => {
     // Apply sorting
@@ -53,7 +53,7 @@ export function Products() {
     if (sortBy === 'name') compareValue = a.name.localeCompare(b.name);
     else if (sortBy === 'price') compareValue = a.price - b.price;
     else if (sortBy === 'stock') compareValue = a.stock - b.stock;
-    
+
     return sortOrder === 'asc' ? compareValue : -compareValue;
   });
 
@@ -96,7 +96,7 @@ export function Products() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Products</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Products</p>
               <h3 className="text-lg">{totalProducts}</h3>
             </div>
             <div className="h-9 w-9 bg-blue-50 rounded-full flex items-center justify-center">
@@ -107,7 +107,7 @@ export function Products() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Available</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Available</p>
               <h3 className="text-lg">{availableProducts}</h3>
             </div>
             <div className="h-9 w-9 rounded-full flex items-center justify-center" style={{ backgroundColor: '#e8f5e9' }}>
@@ -118,7 +118,7 @@ export function Products() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Today's Revenue</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Today's Revenue</p>
               <h3 className="text-lg">₹{todaysRevenue.toLocaleString()}</h3>
             </div>
             <div className="h-9 w-9 bg-purple-50 rounded-full flex items-center justify-center">
@@ -129,7 +129,7 @@ export function Products() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Avg Rating</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Avg Rating</p>
               <h3 className="text-lg">{avgRating}</h3>
             </div>
             <div className="h-9 w-9 bg-yellow-50 rounded-full flex items-center justify-center">
@@ -145,14 +145,14 @@ export function Products() {
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search products..." 
-                className="pl-10 border border-gray-300" 
+              <Input
+                placeholder="Search products..."
+                className="pl-10 border border-gray-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
+
             {/* Category Filter */}
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="w-48 border border-gray-300">
@@ -180,7 +180,7 @@ export function Products() {
 
             {/* More Dropdown */}
             <div className="relative">
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
                 className="gap-2 border border-gray-300"
@@ -192,7 +192,7 @@ export function Products() {
             </div>
 
             {/* Add Product Button */}
-            <Button 
+            <Button
               className="bg-red-500 hover:bg-red-600 border border-red-500"
               onClick={() => setAddModalOpen(true)}
             >
@@ -278,14 +278,14 @@ export function Products() {
           {filteredProducts.map((product) => (
             <Card key={product.id} className="overflow-hidden transition-all duration-200 hover:shadow-lg">
               <div className="relative h-48 bg-gray-100">
-                <ImageWithFallback 
-                  src={product.image} 
+                <ImageWithFallback
+                  src={product.image}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
-                <Badge 
+                <Badge
                   className="absolute top-2 right-2 text-xs"
-                  style={{ 
+                  style={{
                     backgroundColor: product.stock > 0 ? '#e8f5e9' : '#f5f5f5',
                     color: product.stock > 0 ? '#2e7d32' : '#757575'
                   }}

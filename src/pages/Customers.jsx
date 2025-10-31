@@ -40,7 +40,7 @@ export function Customers() {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
-  
+
   // More filter states
   const [timeFilter, setTimeFilter] = useState('all');
   const [sortBy, setSortBy] = useState('name');
@@ -51,7 +51,7 @@ export function Customers() {
       customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.phone.includes(searchQuery);
     const matchesBranch = branchFilter === 'all' || customer.branch === branchFilter;
-    
+
     let matchesStatus = true;
     if (statusFilter === 'active' || statusFilter === 'inactive') {
       matchesStatus = customer.status === statusFilter;
@@ -60,7 +60,7 @@ export function Customers() {
     } else if (statusFilter === 'occasional') {
       matchesStatus = customer.totalOrders < 10;
     }
-    
+
     // Time filter
     let matchesTime = true;
     if (timeFilter === 'today') {
@@ -75,7 +75,7 @@ export function Customers() {
       monthAgo.setDate(monthAgo.getDate() - 30);
       matchesTime = customer.lastOrderDate ? new Date(customer.lastOrderDate) >= monthAgo : false;
     }
-    
+
     return matchesSearch && matchesBranch && matchesStatus && matchesTime;
   }).sort((a, b) => {
     // Apply sorting
@@ -83,7 +83,7 @@ export function Customers() {
     if (sortBy === 'name') compareValue = a.name.localeCompare(b.name);
     else if (sortBy === 'spend') compareValue = a.totalSpent - b.totalSpent;
     else if (sortBy === 'orders') compareValue = a.totalOrders - b.totalOrders;
-    
+
     return sortOrder === 'asc' ? compareValue : -compareValue;
   });
 
@@ -103,8 +103,8 @@ export function Customers() {
   };
 
   const toggleCustomerStatus = (customerId) => {
-    setCustomerList(customerList.map(c => 
-      c.id === customerId 
+    setCustomerList(customerList.map(c =>
+      c.id === customerId
         ? { ...c, status: c.status === 'active' ? 'inactive' : 'active' }
         : c
     ));
@@ -137,21 +137,21 @@ export function Customers() {
     <div className="p-4">
       <div className="mb-4 flex items-center justify-end">
         <div className="flex gap-2">
-          <Button 
+          <Button
             variant="outline"
             size="sm"
             className="transition-all duration-200 h-9 text-xs border border-gray-300"
           >
             🔄 Refresh
           </Button>
-          <Button 
+          <Button
             variant="outline"
             size="sm"
             className="transition-all duration-200 h-9 text-xs bg-red-500 text-white hover:bg-red-600 border border-red-500"
           >
             Export
           </Button>
-          <Button 
+          <Button
             size="sm"
             className="bg-red-500 hover:bg-red-600 transition-all duration-200 h-9 text-xs border border-red-500"
             onClick={() => setAddModalOpen(true)}
@@ -166,7 +166,7 @@ export function Customers() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Customers</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Customers</p>
               <h3 className="text-lg">{totalCustomers}</h3>
             </div>
             <div className="h-9 w-9 bg-blue-50 rounded-full flex items-center justify-center">
@@ -177,7 +177,7 @@ export function Customers() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Active Customers</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Active Customers</p>
               <h3 className="text-lg">{activeCustomers}</h3>
             </div>
             <div className="h-9 w-9 bg-green-50 rounded-full flex items-center justify-center">
@@ -188,7 +188,7 @@ export function Customers() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Returning</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Returning</p>
               <h3 className="text-lg">{returningCustomers}</h3>
             </div>
             <div className="h-9 w-9 bg-purple-50 rounded-full flex items-center justify-center">
@@ -199,7 +199,7 @@ export function Customers() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">High-Value</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">High-Value</p>
               <h3 className="text-lg">{highValueCustomers}</h3>
             </div>
             <div className="h-9 w-9 bg-orange-50 rounded-full flex items-center justify-center">
@@ -248,9 +248,9 @@ export function Customers() {
               </SelectContent>
             </Select>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-9 text-xs gap-1 border border-gray-300"
               onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
             >
@@ -259,7 +259,7 @@ export function Customers() {
               <ChevronDown className="h-3 w-3" />
             </Button>
           </div>
-          
+
           {/* More Filters Row (shown when More is clicked) */}
           {moreDropdownOpen && (
             <div className="flex items-center gap-2 flex-wrap p-3 bg-gray-50 rounded-lg">
@@ -320,7 +320,7 @@ export function Customers() {
           <TableHeader>
             <TableRow className="text-xs">
               <TableHead className="w-12">
-                <Checkbox 
+                <Checkbox
                   checked={selectedCustomers.length === filteredCustomers.length && filteredCustomers.length > 0}
                   onCheckedChange={handleSelectAll}
                 />
@@ -357,7 +357,7 @@ export function Customers() {
               return (
                 <TableRow key={customer.id} className="hover:bg-gray-50 transition-colors duration-200 text-xs">
                   <TableCell>
-                    <Checkbox 
+                    <Checkbox
                       checked={selectedCustomers.includes(customer.id)}
                       onCheckedChange={(checked) => handleSelectCustomer(customer.id, checked)}
                     />
@@ -370,8 +370,8 @@ export function Customers() {
                       <div>
                         <p className="font-medium">{customer.name}</p>
                         {customer.customerType && (
-                          <Badge 
-                            variant="secondary" 
+                          <Badge
+                            variant="secondary"
                             className={`text-[10px] h-4 px-1 ${
                               customer.customerType === 'high-value' ? 'bg-orange-50 text-orange-700 border-orange-200' :
                               customer.customerType === 'returning' ? 'bg-blue-50 text-blue-700 border-blue-200' :
@@ -405,11 +405,11 @@ export function Customers() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Badge 
+                    <Badge
                       variant={customer.status === 'active' ? 'default' : 'secondary'}
                       className={`text-[10px] h-5 ${
-                        customer.status === 'active' 
-                          ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]' 
+                        customer.status === 'active'
+                          ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]'
                           : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100'
                       }`}
                     >
@@ -417,7 +417,7 @@ export function Customers() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Switch 
+                    <Switch
                       checked={customer.status === 'active'}
                       onCheckedChange={() => toggleCustomerStatus(customer.id)}
                       className="h-5 w-9 data-[state=checked]:bg-blue-500"
@@ -526,7 +526,7 @@ export function Customers() {
       {selectedCustomer && (
         <CustomerDetailsModal
           open={detailsModalOpen}
-          onOpenChange={setDetailsModalOpen}
+          onOpen-change={setDetailsModalOpen}
           customer={selectedCustomer}
         />
       )}

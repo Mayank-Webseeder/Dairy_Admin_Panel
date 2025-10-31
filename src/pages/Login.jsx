@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import webseederLogo from 'figma:asset/dbec6477395e40f9a594682daf5e89e877d326cc.png';
 import { slideshowImages } from '../assets/images';
+import { loginUser } from '../lib/auth';
 
 // Import your CSS file
 import '../styles/login.css';
@@ -65,17 +67,23 @@ export function Login({ onLogin, onNavigate }) {
     setLoading(true);
     setError("");
 
-    // Basic validation
-    if (formData.email && formData.password) {
-      // Simulate API call
-      setTimeout(() => {
-        onLogin();
-        setLoading(false);
-      }, 1000);
-    } else {
+    if (!formData.email || !formData.password) {
       setError('Please enter email and password');
       setLoading(false);
+      return;
     }
+
+    // Simulate API call delay
+    setTimeout(() => {
+      const user = loginUser(formData.email, formData.password);
+      
+      if (user) {
+        onLogin(user);
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
+      setLoading(false);
+    }, 1000);
   };
 
   const currentSlide = slidesData[currentSlideIndex];
@@ -93,10 +101,7 @@ export function Login({ onLogin, onNavigate }) {
           ))}
           <div className="slideshow-content">
             <div className="logo">
-              <div className="logo-icon">
-                <span>🥛</span>
-              </div>
-              <h1>DairyDash</h1>
+              <h1>Dynasty Premium</h1>
             </div>
             <div className="welcomeMessage">
               <h2 className="slide-title">{currentSlide.title}</h2>
@@ -190,7 +195,7 @@ export function Login({ onLogin, onNavigate }) {
             </div>
 
             <div className="securityFooter">
-              <p>Secured by DairyDash Technology</p>
+              <p>Secured by Dynasty Premium</p>
             </div>
           </div>
         </div>
@@ -198,3 +203,8 @@ export function Login({ onLogin, onNavigate }) {
     </div>
   );
 }
+
+Login.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func.isRequired,
+};

@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import { X, UserPlus } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
+import { UserPlus, X } from 'lucide-react';
+import { addUserToSystem } from '../../lib/auth';
 
 export function AddUserModal({ open, onOpenChange, onSave }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: 'user',
-    status: 'active',
-    joinDate: new Date().toISOString().split('T')[0],
-    id: Math.random().toString(36).substr(2, 9),
+    phone: '',
+    role: 'User',
   });
 
   const [permissions, setPermissions] = useState({
@@ -37,17 +37,24 @@ export function AddUserModal({ open, onOpenChange, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ ...formData, permissions });
+    // Add user to auth system
+    addUserToSystem({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone,
+      role: formData.role,
+      profilePhoto: ''
+    });
+    onSave(formData);
     onOpenChange(false);
     // Reset form
     setFormData({
       name: '',
       email: '',
       password: '',
-      role: 'user',
-      status: 'active',
-      joinDate: new Date().toISOString().split('T')[0],
-      id: Math.random().toString(36).substr(2, 9),
+      phone: '',
+      role: 'User',
     });
     setPermissions({
       dashboard: false,
@@ -65,14 +72,14 @@ export function AddUserModal({ open, onOpenChange, onSave }) {
     });
   };
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50" onClick={() => onOpenChange(false)} />
-      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="p-0 gap-0 bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col [&>button]:hidden sm:max-w-2xl">
+        <DialogTitle className="sr-only">Create New User</DialogTitle>
+        <DialogDescription className="sr-only">Add a new user to your organization</DialogDescription>
+        
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b shrink-0">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 bg-blue-50 rounded-lg flex items-center justify-center">
               <UserPlus className="h-4 w-4 text-blue-500" />
@@ -83,6 +90,7 @@ export function AddUserModal({ open, onOpenChange, onSave }) {
             </div>
           </div>
           <button
+            type="button"
             onClick={() => onOpenChange(false)}
             className="h-6 w-6 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
           >
@@ -121,17 +129,44 @@ export function AddUserModal({ open, onOpenChange, onSave }) {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <div>
+                  <Label htmlFor="password" className="text-xs">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    placeholder="Enter password"
+                    required
+                    className="text-xs h-9 mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone" className="text-xs">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="Enter phone number"
+                    className="text-xs h-9 mt-1"
+                  />
+                </div>
+              </div>
               <div className="mt-3">
-                <Label htmlFor="password" className="text-xs">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="Enter password"
-                  required
-                  className="text-xs h-9 mt-1"
-                />
+                <Label htmlFor="role" className="text-xs">Role</Label>
+                <select
+                  id="role"
+                  value={formData.role}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  className="w-full text-xs h-9 mt-1 border border-gray-300 rounded-md px-3"
+                >
+                  <option value="User">User</option>
+                  <option value="Manager">Manager</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Super Admin">Super Admin</option>
+                </select>
               </div>
             </div>
 
@@ -303,7 +338,7 @@ export function AddUserModal({ open, onOpenChange, onSave }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 p-4 border-t">
+        <div className="flex items-center justify-end gap-2 p-4 border-t shrink-0">
           <Button
             type="button"
             variant="outline"
@@ -320,7 +355,7 @@ export function AddUserModal({ open, onOpenChange, onSave }) {
             Create User
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

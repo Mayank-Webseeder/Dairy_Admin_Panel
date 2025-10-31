@@ -29,9 +29,7 @@ export function EditModal({
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Make changes to the item below. Click save when you're done.
-          </DialogDescription>
+          <DialogDescription className="sr-only">Edit item details</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 mt-4">

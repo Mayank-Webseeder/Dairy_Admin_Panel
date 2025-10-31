@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { revenueDataMonthly, revenueDataWeekly, revenueDataToday, orderSummaryDataWeekly, orderSummaryDataMonthly } from '../lib/mockData';
+import { revenueDataMonthly, revenueDataWeekly, revenueDataToday, orderSummaryDataWeekly, orderSummaryDataMonthly, getTotalOrdersCount, getTotalRevenue, getTotalCustomersCount, getAverageOrderValue } from '../lib/mockData';
 import { DeliveryBoysCard } from '../components/DeliveryBoysCard';
 import { useState } from 'react';
 import { motion } from 'motion/react';
@@ -35,7 +35,6 @@ export function Dashboard() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="transition-all duration-200">Reset Layout</Button>
           <Button variant="outline" className="transition-all duration-200">
             <Calendar className="h-4 w-4 mr-2" />
             Last 30 days
@@ -51,22 +50,22 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Orders"
-          value="2,847"
+          value={getTotalOrdersCount().toString()}
           icon={ShoppingCart}
         />
         <StatCard
           title="Revenue"
-          value="₹1,45,230"
+          value={`₹${getTotalRevenue().toLocaleString('en-IN')}`}
           icon={DollarSign}
         />
         <StatCard
           title="Customers"
-          value="1,534"
+          value={getTotalCustomersCount().toString()}
           icon={Users}
         />
         <StatCard
           title="Avg Order Value"
-          value="₹895"
+          value={`₹${getAverageOrderValue()}`}
           icon={TrendingUp}
         />
       </div>
@@ -110,30 +109,30 @@ export function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="month" fontSize={10} />
               <YAxis fontSize={10} />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ fontSize: '11px' }}
                 labelStyle={{ fontSize: '11px' }}
               />
-              <Legend 
+              <Legend
                 iconType="circle"
                 wrapperStyle={{ fontSize: '11px' }}
                 iconSize={8}
               />
-              <Line 
-                type="monotone" 
-                dataKey="expenses" 
-                stroke="#9ca3af" 
-                strokeWidth={2} 
+              <Line
+                type="monotone"
+                dataKey="expenses"
+                stroke="#9ca3af"
+                strokeWidth={2}
                 name="Expenses"
                 animationDuration={800}
                 animationBegin={0}
                 dot={{ r: 3, animationBegin: 800, animationDuration: 400 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="income" 
-                stroke="#ef4444" 
-                strokeWidth={2} 
+              <Line
+                type="monotone"
+                dataKey="income"
+                stroke="#ef4444"
+                strokeWidth={2}
                 name="Income"
                 animationDuration={800}
                 animationBegin={0}
@@ -173,27 +172,27 @@ export function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="date" fontSize={10} />
               <YAxis fontSize={10} />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ fontSize: '11px' }}
                 labelStyle={{ fontSize: '11px' }}
               />
-              <Legend 
+              <Legend
                 iconType="circle"
                 wrapperStyle={{ fontSize: '11px' }}
                 iconSize={8}
               />
-              <Bar 
-                dataKey="completed" 
-                fill="#ef4444" 
+              <Bar
+                dataKey="completed"
+                fill="#ef4444"
                 name="Completed"
                 animationBegin={0}
                 animationDuration={1000}
                 animationEasing="ease-out"
                 radius={[4, 4, 0, 0]}
               />
-              <Bar 
-                dataKey="pending" 
-                fill="#9ca3af" 
+              <Bar
+                dataKey="pending"
+                fill="#9ca3af"
                 name="Pending"
                 animationBegin={0}
                 animationDuration={1000}
@@ -250,8 +249,8 @@ export function Dashboard() {
                       <td className="py-3 px-4">
                         <Badge
                           variant="secondary"
-                          className={order.status === 'completed' 
-                            ? 'bg-green-50 text-green-700 hover:bg-green-50' 
+                          className={order.status === 'completed'
+                            ? 'bg-green-50 text-green-700 hover:bg-green-50'
                             : 'bg-orange-50 text-orange-700 hover:bg-orange-50'}
                         >
                           {order.status}
@@ -275,9 +274,14 @@ export function Dashboard() {
               { name: 'Ghee', sales: 142, change: '+5%' },
             ].map((product, index) => (
               <div key={index} className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm">{product.name}</p>
-                  <p className="text-xs text-muted-foreground">{product.sales} sales</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-8 w-8 rounded bg-red-50 text-red-600">
+                    {index + 1}
+                  </div>
+                  <div>
+                    <p className="text-sm">{product.name}</p>
+                    <p className="text-xs text-muted-foreground">{product.sales} sales</p>
+                  </div>
                 </div>
                 <span className="text-sm text-green-600">{product.change}</span>
               </div>
@@ -288,9 +292,9 @@ export function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <DeliveryBoysCard />
-        
+       
         <Card className="p-6">
-          <h3 className="mb-4">Top Selling Dishes</h3>
+          <h3 className="mb-4">Top Selling Products</h3>
           <div className="space-y-4">
             {[
               { name: 'Full Cream Milk', orders: 328, revenue: 4920 },

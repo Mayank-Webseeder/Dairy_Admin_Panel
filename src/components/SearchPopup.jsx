@@ -1,19 +1,20 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Search, LayoutDashboard, ShoppingCart, Package, Users, Building2, Bike, Settings, Home } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription } from './ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { cn } from './ui/utils';
 
 const searchItems = [
   { id: '1', title: 'Dashboard', subtitle: 'Overview & Analytics', icon: LayoutDashboard, page: 'dashboard' },
-  { id: '2', title: 'User Management', subtitle: 'Manage users', icon: Users, page: 'users' },
+  { id: '2', title: 'User Management', subtitle: 'Manage users', icon: Users, page: 'user-management' },
   { id: '3', title: 'Branch Management', subtitle: 'Manage branches', icon: Building2, page: 'branches' },
-  { id: '4', title: 'Menu Management', subtitle: 'Manage menu items', icon: Home, page: 'home-management' },
+  { id: '4', title: 'Menu Management', subtitle: 'Manage menu items', icon: Home, page: 'home-page' },
   { id: '5', title: 'Orders', subtitle: 'View all orders', icon: ShoppingCart, page: 'orders' },
   { id: '6', title: 'Products', subtitle: 'Manage products', icon: Package, page: 'products' },
   { id: '7', title: 'Customers', subtitle: 'Customer list', icon: Users, page: 'customers' },
   { id: '8', title: 'Delivery Staff', subtitle: 'Manage delivery team', icon: Bike, page: 'delivery-staff' },
-  { id: '9', title: 'Settings', subtitle: 'App settings', icon: Settings, page: 'settings' },
+  { id: '9', title: 'Settings', subtitle: 'App settings', icon: Settings, page: 'updated-settings' },
 ];
 
 export function SearchPopup({ open, onOpenChange, onNavigate }) {
@@ -38,6 +39,9 @@ export function SearchPopup({ open, onOpenChange, onNavigate }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl p-0 gap-0">
+        <DialogTitle className="sr-only">
+          Search Navigation
+        </DialogTitle>
         <DialogDescription className="sr-only">
           Search for pages and navigate quickly through the admin panel
         </DialogDescription>
@@ -51,7 +55,7 @@ export function SearchPopup({ open, onOpenChange, onNavigate }) {
             autoFocus
           />
         </div>
-        
+
         <div className="max-h-[400px] overflow-y-auto">
           <div className="p-2">
             <div className="text-xs text-muted-foreground px-3 py-2">
@@ -103,3 +107,10 @@ export function SearchPopup({ open, onOpenChange, onNavigate }) {
     </Dialog>
   );
 }
+
+// PropTypes for runtime type checking in JavaScript
+SearchPopup.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onOpenChange: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func.isRequired,
+};

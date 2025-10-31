@@ -178,8 +178,8 @@ export function EditBranchModal({
 
               <div className="space-y-2">
                 <Label htmlFor="status" className="text-xs">Status</Label>
-                <Select 
-                  value={formData.status || 'active'} 
+                <Select
+                  value={formData.status || 'active'}
                   onValueChange={(value) => handleChange('status', value)}
                 >
                   <SelectTrigger className="text-xs h-9">

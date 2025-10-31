@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 
@@ -91,7 +91,10 @@ function TableCell({ className, ...props }) {
   );
 }
 
-function TableCaption({ className, ...props }) {
+function TableCaption({
+  className,
+  ...props
+}) {
   return (
     <caption
       data-slot="table-caption"

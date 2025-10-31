@@ -39,6 +39,14 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Compact typography sizes - text-xs as base */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 0.75rem;
+  --text-lg: 0.875rem;
+  --text-xl: 1rem;
+  --text-2xl: 1.125rem;
 }
 
 .dark {
@@ -63,6 +71,7 @@
   --ring: oklch(0.439 0 0);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
+  --font-weight-bold: 700;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -131,59 +140,167 @@
 
 /**
  * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ * Using compact typography with text-xs (0.75rem) as base
  */
 @layer base {
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
       font-size: var(--text-2xl);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      font-weight: var(--font-weight-bold);
+      line-height: 1.4;
     }
 
     h2 {
       font-size: var(--text-xl);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      font-weight: var(--font-weight-bold);
+      line-height: 1.4;
     }
 
     h3 {
       font-size: var(--text-lg);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      font-weight: var(--font-weight-bold);
+      line-height: 1.4;
     }
 
     h4 {
       font-size: var(--text-base);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      font-weight: var(--font-weight-bold);
+      line-height: 1.4;
+    }
+
+    h5 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-bold);
+      line-height: 1.4;
+    }
+
+    h6 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-bold);
+      line-height: 1.4;
     }
 
     p {
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
-      line-height: 1.5;
+      line-height: 1.4;
+    }
+
+    span {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+    }
+
+    div {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
     }
 
     label {
       font-size: var(--text-base);
       font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     button {
       font-size: var(--text-base);
       font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     input {
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
-      line-height: 1.5;
+      line-height: 1.4;
+    }
+
+    textarea {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+    }
+
+    select {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+    }
+
+    a {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+    }
+
+    li {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+    }
+
+    td, th {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
     }
   }
 }
 
 html {
   font-size: var(--font-size);
+}
+
+/* Custom checkbox and radio button styles */
+@layer components {
+  /* Blue checkbox styling */
+  [role="checkbox"][data-state="checked"],
+  [role="checkbox"][aria-checked="true"] {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+  }
+  
+  [role="checkbox"] {
+    border: 1.5px solid #d1d5db !important;
+  }
+  
+  [role="checkbox"]:hover {
+    border-color: #3b82f6 !important;
+  }
+  
+  /* Blue radio button styling */
+  [role="radio"][data-state="checked"],
+  [role="radio"][aria-checked="true"] {
+    border-color: #3b82f6 !important;
+  }
+  
+  [role="radio"][data-state="checked"]::before,
+  [role="radio"][aria-checked="true"]::before {
+    background-color: #3b82f6 !important;
+  }
+  
+  [role="radio"] {
+    border: 1.5px solid #d1d5db !important;
+  }
+  
+  [role="radio"]:hover {
+    border-color: #3b82f6 !important;
+  }
+  
+  /* Ensure consistent font sizes throughout the app */
+  .text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+
+  /* Override any larger text sizes to maintain consistency */
+  body {
+    font-size: var(--text-base) !important;
+  }
+
+  /* Ensure all elements inherit the compact font size */
+  * {
+    font-size: inherit;
+  }
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label@2.1.2";
@@ -15,9 +15,7 @@ import { Label } from "./label";
 
 const Form = FormProvider;
 
-const FormFieldContext = React.createContext(
-  {}
-);
+const FormFieldContext = React.createContext({});
 
 const FormField = ({
   ...props
@@ -52,9 +50,7 @@ const useFormField = () => {
   };
 };
 
-const FormItemContext = React.createContext(
-  {}
-);
+const FormItemContext = React.createContext({});
 
 function FormItem({ className, ...props }) {
   const id = React.useId();

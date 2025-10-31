@@ -133,6 +133,7 @@
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
     --radius-xs: .125rem;
+    --radius-2xl: 1rem;
     --ease-out: cubic-bezier(0, 0, .2, 1);
     --ease-in-out: cubic-bezier(.4, 0, .2, 1);
     --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
@@ -417,43 +418,43 @@
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h1 {
     font-size: var(--text-2xl);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h2 {
     font-size: var(--text-xl);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h3 {
     font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
-  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h4 {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h4, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h5, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h6 {
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
-  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) p {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) p, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) span, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) div {
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) label, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button {
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
-  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) input {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) input, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) textarea, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) select, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) a, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) li, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) td, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) th {
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 }
 
@@ -598,8 +599,8 @@
     grid-row-start: 1;
   }
 
-  .m-3 {
-    margin: calc(var(--spacing) * 3);
+  .m-4 {
+    margin: calc(var(--spacing) * 4);
   }
 
   .-mx-1 {
@@ -708,6 +709,13 @@
 
   .line-clamp-1 {
     -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     display: -webkit-box;
     overflow: hidden;
@@ -859,8 +867,8 @@
     height: 1.15rem;
   }
 
-  .h-\[540px\] {
-    height: 540px;
+  .h-\[600px\] {
+    height: 600px;
   }
 
   .h-\[calc\(100\%-1px\)\] {
@@ -1007,6 +1015,10 @@
     width: calc(var(--spacing) * 64);
   }
 
+  .w-80 {
+    width: calc(var(--spacing) * 80);
+  }
+
   .w-96 {
     width: calc(var(--spacing) * 96);
   }
@@ -1017,10 +1029,6 @@
 
   .w-\[140px\] {
     width: 140px;
-  }
-
-  .w-\[280px\] {
-    width: 280px;
   }
 
   .w-fit {
@@ -1305,6 +1313,10 @@
     border-radius: 4px;
   }
 
+  .rounded-\[32px\] {
+    border-radius: 32px;
+  }
+
   .rounded-\[40px\] {
     border-radius: 40px;
   }
@@ -1337,6 +1349,11 @@
     border-radius: var(--radius-xs);
   }
 
+  .rounded-b-2xl {
+    border-bottom-right-radius: var(--radius-2xl);
+    border-bottom-left-radius: var(--radius-2xl);
+  }
+
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -1350,11 +1367,6 @@
   .border-2 {
     border-style: var(--tw-border-style);
     border-width: 2px;
-  }
-
-  .border-8 {
-    border-style: var(--tw-border-style);
-    border-width: 8px;
   }
 
   .border-t {
@@ -1377,6 +1389,16 @@
     border-left-width: 1px;
   }
 
+  .border-l-2 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 2px;
+  }
+
+  .border-l-4 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 4px;
+  }
+
   .border-dashed {
     --tw-border-style: dashed;
     border-style: dashed;
@@ -1386,12 +1408,12 @@
     border-color: oklab(52.3432% -.109172 .0788324 / .2);
   }
 
-  .border-black {
-    border-color: var(--color-black);
-  }
-
   .border-blue-200 {
     border-color: var(--color-blue-200);
+  }
+
+  .border-blue-500 {
+    border-color: var(--color-blue-500);
   }
 
   .border-border {
@@ -1444,6 +1466,10 @@
 
   .bg-background {
     background-color: var(--background);
+  }
+
+  .bg-black {
+    background-color: var(--color-black);
   }
 
   .bg-black\/50 {
@@ -1725,6 +1751,10 @@
     padding-block: calc(var(--spacing) * 12);
   }
 
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
+  }
+
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -1761,6 +1791,10 @@
     padding-left: calc(var(--spacing) * 3);
   }
 
+  .pl-4 {
+    padding-left: calc(var(--spacing) * 4);
+  }
+
   .pl-9 {
     padding-left: calc(var(--spacing) * 9);
   }
@@ -1783,6 +1817,10 @@
 
   .align-middle {
     vertical-align: middle;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
   }
 
   .text-2xl {
@@ -2313,6 +2351,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-gray-700:hover {
+      background-color: var(--color-gray-700);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-gray-800:hover {
       background-color: var(--color-gray-800);
     }
@@ -2813,6 +2857,12 @@
   }
 
   @media (width >= 40rem) {
+    .sm\:max-w-2xl {
+      max-width: var(--container-2xl);
+    }
+  }
+
+  @media (width >= 40rem) {
     .sm\:max-w-lg {
       max-width: var(--container-lg);
     }
@@ -3055,6 +3105,10 @@
   .\[\&\>\[role\=checkbox\]\]\:translate-y-\[2px\] > [role="checkbox"] {
     --tw-translate-y: 2px;
     translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+
+  .\[\&\>button\]\:hidden > button {
+    display: none;
   }
 
   .\[\&\>svg\]\:pointer-events-none > svg {
@@ -4101,6 +4155,12 @@
   --sidebar-accent-foreground: oklch(.205 0 0);
   --sidebar-border: oklch(.922 0 0);
   --sidebar-ring: oklch(.708 0 0);
+  --text-xs: .75rem;
+  --text-sm: .875rem;
+  --text-base: .75rem;
+  --text-lg: .875rem;
+  --text-xl: 1rem;
+  --text-2xl: 1.125rem;
 }
 
 .dark {
@@ -4142,6 +4202,46 @@
 
 html {
   font-size: var(--font-size);
+}
+
+@layer components {
+  [role="checkbox"][data-state="checked"], [role="checkbox"][aria-checked="true"] {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+  }
+
+  [role="checkbox"] {
+    border: 1.5px solid #d1d5db !important;
+  }
+
+  [role="checkbox"]:hover, [role="radio"][data-state="checked"], [role="radio"][aria-checked="true"] {
+    border-color: #3b82f6 !important;
+  }
+
+  [role="radio"][data-state="checked"]:before, [role="radio"][aria-checked="true"]:before {
+    background-color: #3b82f6 !important;
+  }
+
+  [role="radio"] {
+    border: 1.5px solid #d1d5db !important;
+  }
+
+  [role="radio"]:hover {
+    border-color: #3b82f6 !important;
+  }
+
+  .text-xs {
+    font-size: .75rem !important;
+    line-height: 1rem !important;
+  }
+
+  body {
+    font-size: var(--text-base) !important;
+  }
+
+  * {
+    font-size: inherit;
+  }
 }
 
 @property --tw-translate-x {

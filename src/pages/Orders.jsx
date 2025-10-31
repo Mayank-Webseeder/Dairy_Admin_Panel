@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
-import { orders as initialOrders } from '../lib/mockData';
+import { orders as initialOrders, branches as allBranches } from '../lib/mockData';
 import { EditModal } from '../components/modals/EditModal';
 import { DeleteConfirmationModal } from '../components/modals/DeleteConfirmationModal';
 
@@ -30,49 +30,51 @@ export function Orders() {
   const [branchDropdownOpen, setBranchDropdownOpen] = useState(false);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const [entriesPerPage, setEntriesPerPage] = useState(10);
-  
+
   // More filter states
   const [paymentFilter, setPaymentFilter] = useState('all');
-  const [timeFilter, setTimeFilter] = useState('today');
+  const [timeFilter, setTimeFilter] = useState('all');
   const [sortBy, setSortBy] = useState('date');
   const [sortOrder, setSortOrder] = useState('desc');
-  
-  const branches = ['Airport Branch', 'Downtown Branch', 'T. Nagar Branch', 'Koramangala Branch', 'Andheri West Branch'];
+
+  const branches = allBranches.map(b => b.name);
 
   const filteredOrders = orderList.filter(order => {
     const matchesSearch = order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.id.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
-    
+
     const matchesBranch = branchFilter === 'all' || order.branch === branchFilter;
-    
+
     // Payment filter
     const matchesPayment = paymentFilter === 'all' || order.payment?.toLowerCase() === paymentFilter.toLowerCase();
-    
+
     // Time filter
     let matchesTime = true;
-    const orderDate = new Date(order.date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    if (timeFilter === 'today') {
-      const todayStr = today.toISOString().split('T')[0];
-      matchesTime = order.date === todayStr;
-    } else if (timeFilter === 'yesterday') {
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      matchesTime = order.date === yesterday.toISOString().split('T')[0];
-    } else if (timeFilter === 'week') {
-      const weekAgo = new Date(today);
-      weekAgo.setDate(weekAgo.getDate() - 7);
-      matchesTime = orderDate >= weekAgo;
-    } else if (timeFilter === 'month') {
-      const monthAgo = new Date(today);
-      monthAgo.setDate(monthAgo.getDate() - 30);
-      matchesTime = orderDate >= monthAgo;
+    if (timeFilter !== 'all') {
+      const orderDate = new Date(order.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (timeFilter === 'today') {
+        const todayStr = today.toISOString().split('T')[0];
+        matchesTime = order.date === todayStr;
+      } else if (timeFilter === 'yesterday') {
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        matchesTime = order.date === yesterday.toISOString().split('T')[0];
+      } else if (timeFilter === 'week') {
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        matchesTime = orderDate >= weekAgo;
+      } else if (timeFilter === 'month') {
+        const monthAgo = new Date(today);
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        matchesTime = orderDate >= monthAgo;
+      }
     }
-    
+
     return matchesSearch && matchesStatus && matchesBranch && matchesPayment && matchesTime;
   }).sort((a, b) => {
     // Apply sorting
@@ -80,7 +82,7 @@ export function Orders() {
     if (sortBy === 'date') compareValue = new Date(b.date).getTime() - new Date(a.date).getTime();
     else if (sortBy === 'amount') compareValue = a.total - b.total;
     else if (sortBy === 'customer') compareValue = a.customerName.localeCompare(b.customerName);
-    
+
     return sortOrder === 'asc' ? compareValue : -compareValue;
   });
 
@@ -104,7 +106,7 @@ export function Orders() {
     setBranchFilter('all');
     setSearchQuery('');
     setPaymentFilter('all');
-    setTimeFilter('today');
+    setTimeFilter('all');
     setSortBy('date');
     setSortOrder('desc');
   };
@@ -121,7 +123,7 @@ export function Orders() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Orders</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Orders</p>
               <h3 className="text-lg">{totalOrders}</h3>
             </div>
             <div className="h-9 w-9 bg-blue-50 rounded-full flex items-center justify-center">
@@ -132,7 +134,7 @@ export function Orders() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Completed</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Completed</p>
               <h3 className="text-lg">{completedOrders}</h3>
             </div>
             <div className="h-9 w-9 bg-green-50 rounded-full flex items-center justify-center">
@@ -143,7 +145,7 @@ export function Orders() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Pending</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Pending</p>
               <h3 className="text-lg">{pendingOrders}</h3>
             </div>
             <div className="h-9 w-9 bg-yellow-50 rounded-full flex items-center justify-center">
@@ -154,7 +156,7 @@ export function Orders() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Cancelled</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Cancelled</p>
               <h3 className="text-lg">{cancelledOrders}</h3>
             </div>
             <div className="h-9 w-9 bg-red-50 rounded-full flex items-center justify-center">
@@ -176,7 +178,7 @@ export function Orders() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
+
             {/* All Status Dropdown */}
             <div className="relative">
               <Button
@@ -263,15 +265,15 @@ export function Orders() {
                 <ChevronDown className="h-3 w-3 ml-2" />
               </Button>
             </div>
-            
-            <Button 
+
+            <Button
               variant="outline"
               size="sm"
               className="transition-all duration-200 h-9 text-xs border border-gray-300"
             >
               🔄 Refresh
             </Button>
-            <Button 
+            <Button
               variant="outline"
               size="sm"
               onClick={handleExport}
@@ -281,7 +283,7 @@ export function Orders() {
             </Button>
 
           </div>
-          
+
           {/* More Filters Row (shown when More is clicked) */}
           {moreDropdownOpen && (
             <div className="flex items-center gap-2 flex-wrap p-3 bg-gray-50">
@@ -300,9 +302,10 @@ export function Orders() {
 
               <Select value={timeFilter} onValueChange={setTimeFilter}>
                 <SelectTrigger className="w-32 h-9 text-xs border border-gray-300">
-                  <SelectValue placeholder="Today" />
+                  <SelectValue placeholder="All Time" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Time</SelectItem>
                   <SelectItem value="today">Today</SelectItem>
                   <SelectItem value="yesterday">Yesterday</SelectItem>
                   <SelectItem value="week">This Week</SelectItem>
@@ -347,7 +350,7 @@ export function Orders() {
         <div className="px-4 py-2 border-b flex items-center justify-between bg-gray-50">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span>Show:</span>
-            <select 
+            <select
               value={entriesPerPage}
               onChange={(e) => setEntriesPerPage(Number(e.target.value))}
               className="border rounded px-2 py-1 text-xs"
@@ -417,11 +420,11 @@ export function Orders() {
                     <Badge
                       variant="secondary"
                       className={
-                        order.status === 'completed' 
-                          ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9] text-[10px] h-5' 
+                        order.status === 'completed'
+                          ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9] text-[10px] h-5'
                           : order.status === 'pending'
-                          ? 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50 text-[10px] h-5'
-                          : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100 text-[10px] h-5'
+                            ? 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50 text-[10px] h-5'
+                            : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100 text-[10px] h-5'
                       }
                     >
                       {order.status}
@@ -429,15 +432,15 @@ export function Orders() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex gap-1 justify-end">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         className="h-7 w-7 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
                       >
                         <Eye className="h-3 w-3" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         className="h-7 w-7 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
                         onClick={() => {
@@ -447,8 +450,8 @@ export function Orders() {
                       >
                         <Edit2 className="h-3 w-3" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         className="h-7 w-7 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                         onClick={() => {

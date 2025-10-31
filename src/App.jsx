@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SlidingSidebar } from './components/SlidingSidebar';
 import { UpdatedHeader } from './components/UpdatedHeader';
 import { Dashboard } from './pages/Dashboard';
@@ -15,36 +15,46 @@ import { Reports } from './pages/Reports';
 import { PushNotifications } from './pages/PushNotifications';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
-import { TrendingUp, FileText } from 'lucide-react';
+import { getCurrentUser, logoutUser } from './lib/auth';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState('');
-  const [userName, setUserName] = useState('John Doe');
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const handleProfileUpdate = (name, photo) => {
-    setUserName(name);
-    setProfilePhoto(photo);
-  };
+  useEffect(() => {
+    // Check if user is already logged in
+    const user = getCurrentUser();
+    if (user) {
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+      setCurrentPage('dashboard');
+    }
+  }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (user) => {
     setIsLoggedIn(true);
+    setCurrentUser(user);
     setCurrentPage('dashboard');
   };
 
-  const handleSignup = () => {
+  const handleSignup = (user) => {
     setIsLoggedIn(true);
+    setCurrentUser(user);
     setCurrentPage('dashboard');
   };
 
   const handleLogout = () => {
     if (confirm('Are you sure you want to logout?')) {
+      logoutUser();
       setIsLoggedIn(false);
+      setCurrentUser(null);
       setCurrentPage('login');
-      setProfilePhoto('');
-      setUserName('John Doe');
     }
+  };
+
+  const handleProfileUpdate = (updatedUser) => {
+    setCurrentUser(updatedUser);
   };
 
   const getPageInfo = () => {
@@ -99,7 +109,7 @@ export default function App() {
       case 'updated-settings':
         return <UpdatedSettings />;
       case 'profile':
-        return <ProfileSettings onProfileUpdate={handleProfileUpdate} />;
+        return <ProfileSettings onProfileUpdate={handleProfileUpdate} currentUser={currentUser} />;
       case 'reports':
         return <Reports />;
       case 'notifications':
@@ -127,9 +137,9 @@ export default function App() {
         <UpdatedHeader 
           onNavigate={setCurrentPage}
           onLogout={handleLogout}
-          profilePhoto={profilePhoto}
-          userName={userName}
-          userRole="Super Admin"
+          profilePhoto={currentUser?.profilePhoto || ''}
+          userName={currentUser?.name || 'User'}
+          userRole={currentUser?.role || 'User'}
           currentPage={currentPage}
           pageTitle={getPageInfo().title}
           pageSubtitle={getPageInfo().subtitle}
@@ -137,20 +147,6 @@ export default function App() {
         <main className="flex-1 overflow-y-auto">
           {renderPage()}
         </main>
-      </div>
-    </div>
-  );
-}
-
-function ComingSoonPage({ icon: Icon, title }) {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <div className="text-center">
-        <div className="h-16 w-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Icon className="h-8 w-8 text-red-500" />
-        </div>
-        <h2 className="mb-2">{title}</h2>
-        <p className="text-muted-foreground">This feature is coming soon!</p>
       </div>
     </div>
   );

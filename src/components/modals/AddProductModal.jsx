@@ -78,9 +78,7 @@ export function AddProductModal({ open, onClose, onAdd }) {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Dish</DialogTitle>
-          <DialogDescription>
-            Fill in the details below to add a new product to your inventory.
-          </DialogDescription>
+          <DialogDescription className="sr-only">Add a new product to your inventory</DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-4 mt-4">

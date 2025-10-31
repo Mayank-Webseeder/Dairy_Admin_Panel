@@ -11,40 +11,45 @@ import {
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ShoppingCart, DollarSign, Users, Building2, Download } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { branches, products } from '../lib/mockData';
 
 export function Reports() {
   const [branch, setBranch] = useState('all');
   const [dateRange, setDateRange] = useState('month');
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Mock data
+  // Get actual branch data
+  const activeBranches = branches.filter(b => b.status === 'active');
+
+  // Mock data for stats
   const stats = {
     totalOrders: 12847,
     totalRevenue: 456720.50,
     totalCustomers: 8542,
-    activeBranches: 4,
+    activeBranches: activeBranches.length,
   };
 
-  const branchPerformance = [
-    { name: 'Downtown', revenue: 185420.00, orders: 3240, growth: '+12.5%' },
-    { name: 'Mall', revenue: 142680.00, orders: 2890, growth: '+12.5%' },
-    { name: 'Airport', revenue: 98340.00, orders: 1890, growth: '+12.5%' },
-    { name: 'Marina', revenue: 89280.00, orders: 1720, growth: '+12.5%' },
-  ];
+  // Use actual branch data for performance
+  const branchPerformance = branches.map(b => ({
+    name: b.name,
+    revenue: b.revenue,
+    orders: b.orders,
+    growth: '+12.5%'
+  }));
 
-  const revenueByBranch = [
-    { name: 'Downtown', revenue: 185000 },
-    { name: 'Mall', revenue: 142000 },
-    { name: 'Airport', revenue: 98000 },
-    { name: 'Marina', revenue: 95000 },
-  ];
+  // Use actual branch data for revenue chart
+  const revenueByBranch = branches.map(b => ({
+    name: b.name,
+    revenue: b.revenue
+  }));
 
-  const topSellingDishes = [
-    { name: 'Margherita Pizza', value: 1240, color: '#EF5350' },
-    { name: 'Chicken Burger', value: 890, color: '#26C6DA' },
-    { name: 'Caesar Salad', value: 720, color: '#42A5F5' },
-    { name: 'Biryani', value: 650, color: '#FFA726' },
-    { name: 'Shawarma', value: 580, color: '#AB47BC' },
+  // Use actual product data for top selling products
+  const topSellingProducts = [
+    { name: products[0]?.name || 'Full Cream Milk', value: 1240, color: '#EF5350' },
+    { name: products[2]?.name || 'Paneer', value: 890, color: '#26C6DA' },
+    { name: products[3]?.name || 'Fresh Curd', value: 720, color: '#42A5F5' },
+    { name: products[5]?.name || 'Ghee', value: 650, color: '#FFA726' },
+    { name: products[1]?.name || 'Toned Milk', value: 580, color: '#AB47BC' },
   ];
 
   const highValueCustomers = [
@@ -119,10 +124,9 @@ export function Reports() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-xs">All Branches</SelectItem>
-              <SelectItem value="downtown" className="text-xs">Downtown</SelectItem>
-              <SelectItem value="mall" className="text-xs">Mall</SelectItem>
-              <SelectItem value="airport" className="text-xs">Airport</SelectItem>
-              <SelectItem value="marina" className="text-xs">Marina</SelectItem>
+              {branches.map((b) => (
+                <SelectItem key={b.id} value={b.id} className="text-xs">{b.name}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -140,7 +144,7 @@ export function Reports() {
             </SelectContent>
           </Select>
 
-          <Button 
+          <Button
             onClick={handleApplyFilters}
             className="h-9 text-xs bg-blue-500 hover:bg-blue-600"
           >
@@ -149,7 +153,7 @@ export function Reports() {
         </div>
 
         <div className="flex gap-2">
-          <Button 
+          <Button
             variant="outline"
             size="sm"
             onClick={handleRefresh}
@@ -157,7 +161,7 @@ export function Reports() {
           >
             🔄 Refresh
           </Button>
-          <Button 
+          <Button
             variant="outline"
             size="sm"
             onClick={handleExport}
@@ -174,7 +178,7 @@ export function Reports() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Orders</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Orders</p>
               <h3 className="text-lg">{stats.totalOrders.toLocaleString()}</h3>
             </div>
             <div className="h-9 w-9 bg-blue-50 rounded-full flex items-center justify-center">
@@ -186,7 +190,7 @@ export function Reports() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Revenue</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Revenue</p>
               <h3 className="text-lg">₹{stats.totalRevenue.toLocaleString()}</h3>
             </div>
             <div className="h-9 w-9 bg-red-50 rounded-full flex items-center justify-center">
@@ -198,7 +202,7 @@ export function Reports() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total Customers</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Total Customers</p>
               <h3 className="text-lg">{stats.totalCustomers.toLocaleString()}</h3>
             </div>
             <div className="h-9 w-9 bg-green-50 rounded-full flex items-center justify-center">
@@ -210,7 +214,7 @@ export function Reports() {
         <Card className="p-4 transition-all duration-200 hover:shadow-md">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Active Branches</p>
+              <p className="text-sm text-muted-foreground mb-1 font-bold">Active Branches</p>
               <h3 className="text-lg">{stats.activeBranches}</h3>
             </div>
             <div className="h-9 w-9 bg-purple-50 rounded-full flex items-center justify-center">
@@ -254,14 +258,14 @@ export function Reports() {
               </ResponsiveContainer>
             </Card>
 
-            {/* Top Selling Dishes */}
+            {/* Top Selling Products */}
             <Card className="p-6">
-              <h3 className="font-medium mb-4">Top Selling Dishes</h3>
+              <h3 className="font-medium mb-4">Top Selling Products</h3>
               <div className="flex items-center justify-between">
                 <ResponsiveContainer width="50%" height={300}>
                   <PieChart>
                     <Pie
-                      data={topSellingDishes}
+                      data={topSellingProducts}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
@@ -269,7 +273,7 @@ export function Reports() {
                       paddingAngle={2}
                       dataKey="value"
                     >
-                      {topSellingDishes.map((entry, index) => (
+                      {topSellingProducts.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
@@ -277,13 +281,13 @@ export function Reports() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="space-y-2">
-                  {topSellingDishes.map((dish, index) => (
+                  {topSellingProducts.map((product, index) => (
                     <div key={index} className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: dish.color }} />
-                        <span className="text-xs">{dish.name}</span>
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: product.color }} />
+                        <span className="text-xs">{product.name}</span>
                       </div>
-                      <span className="text-xs font-medium">{dish.value} orders</span>
+                      <span className="text-xs font-medium">{product.value} orders</span>
                     </div>
                   ))}
                 </div>
@@ -315,9 +319,9 @@ export function Reports() {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-medium">Branch Performance</h3>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="text-xs h-8"
                   onClick={handleExportCSV}
                 >
@@ -351,11 +355,11 @@ export function Reports() {
                 <div className="space-y-2 text-left mt-8">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">Highest AOV:</span>
-                    <span className="font-medium">Downtown Branch - ₹125.80</span>
+                    <span className="font-medium">{branches[0]?.name || 'Branch'} - ₹125.80</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">Lowest AOV:</span>
-                    <span className="font-medium">Marina Branch - ₹67.20</span>
+                    <span className="font-medium">{branches[2]?.name || 'Branch'} - ₹67.20</span>
                   </div>
                 </div>
               </div>
@@ -431,8 +435,8 @@ export function Reports() {
                 {ordersByStatus.map((status, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div 
-                        className="w-4 h-4 rounded-full" 
+                      <div
+                        className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: status.color }}
                       />
                       <span className="text-sm">{status.status}</span>
@@ -452,9 +456,9 @@ export function Reports() {
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={peakHoursData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                  <XAxis 
-                    dataKey="hour" 
-                    tick={{ fontSize: 10 }} 
+                  <XAxis
+                    dataKey="hour"
+                    tick={{ fontSize: 10 }}
                     angle={-45}
                     textAnchor="end"
                     height={60}

@@ -54,22 +54,18 @@ export function SlidingSidebar({ currentPage, onPageChange, onLogout }) {
       {/* Logo */}
       <div className="h-12 flex items-center px-4 border-b border-gray-200 bg-white">
         {isExpanded ? (
-          <span className="text-red-500 whitespace-nowrap transition-opacity duration-300 text-sm font-semibold">
-            DairyDash
-          </span>
+          <div className="flex flex-col">
+            <span className="text-red-500 whitespace-nowrap transition-opacity duration-300 text-sm font-semibold">
+              Dynasty Premium
+            </span>
+            <p className="text-xs text-gray-600 whitespace-nowrap transition-opacity duration-300">Welcome Admin!</p>
+          </div>
         ) : (
           <div className="h-8 w-8 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 mx-auto">
             <Package className="h-4 w-4 text-white" />
           </div>
         )}
       </div>
-
-      {/* Welcome Message */}
-      {isExpanded && (
-        <div className="px-4 py-3 border-b border-gray-200 bg-white">
-          <p className="text-xs text-gray-600">Welcome Admin!</p>
-        </div>
-      )}
 
       {/* Navigation */}
       <nav className="flex-1 py-4 px-3 overflow-y-auto">

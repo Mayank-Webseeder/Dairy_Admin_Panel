@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserPlus, Search, Edit2, Trash2, Download, Filter, Users as UsersIcon, UserCheck, ChevronDown, X, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -12,14 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
-import { users as initialUsers } from '../lib/mockData';
+import { getAllUsers, deleteUserFromSystem } from '../lib/auth';
 import { AddUserModal } from '../components/modals/AddUserModal';
 import { EditModal } from '../components/modals/EditModal';
 import { DeleteConfirmationModal } from '../components/modals/DeleteConfirmationModal';
 
 export function UserManagement() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [userList, setUserList] = useState(initialUsers);
+  const [userList, setUserList] = useState([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -33,6 +33,11 @@ export function UserManagement() {
   const [moduleDropdownOpen, setModuleDropdownOpen] = useState(false);
   const [sortByDropdownOpen, setSortByDropdownOpen] = useState(false);
 
+  // Load users from auth system
+  useEffect(() => {
+    setUserList(getAllUsers());
+  }, []);
+
   const filteredUsers = userList.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -40,7 +45,7 @@ export function UserManagement() {
     
     const matchesRole = roleFilter === 'all' || 
       (roleFilter === 'admin' && (user.role === 'Super Admin' || user.role === 'Admin')) ||
-      (roleFilter === 'user' && (user.role === 'Manager' || user.role === 'Staff'));
+      (roleFilter === 'user' && (user.role === 'Manager' || user.role === 'Staff' || user.role === 'User'));
     
     return matchesSearch && matchesRole;
   });
@@ -56,7 +61,7 @@ export function UserManagement() {
         compareValue = a.email.localeCompare(b.email);
         break;
       case 'date':
-        compareValue = new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime();
+        compareValue = 0; // AuthUser doesn't have joinDate
         break;
       case 'role':
         compareValue = a.role.localeCompare(b.role);
@@ -66,16 +71,24 @@ export function UserManagement() {
   });
 
   const handleAddUser = (user) => {
-    setUserList([...userList, user]);
+    // Refresh user list from auth system
+    setUserList(getAllUsers());
   };
 
   const handleEditUser = (updatedData) => {
-    setUserList(userList.map(u => u.id === updatedData.id ? updatedData : u));
+    // Update user in auth system
+    const { updateUserInSystem } = require('../lib/auth');
+    updateUserInSystem(updatedData.id, updatedData);
+    // Refresh user list from auth system
+    setUserList(getAllUsers());
+    setEditModalOpen(false);
+    setSelectedUser(null);
   };
 
   const handleDeleteUser = () => {
     if (selectedUser) {
-      setUserList(userList.filter(u => u.id !== selectedUser.id));
+      deleteUserFromSystem(selectedUser.id);
+      setUserList(getAllUsers());
       setSelectedUser(null);
     }
   };
@@ -93,7 +106,7 @@ export function UserManagement() {
 
   const totalUsers = userList.length;
   const adminUsers = userList.filter(u => u.role === 'Super Admin' || u.role === 'Admin').length;
-  const activeUsers = userList.filter(u => u.status === 'active').length;
+  const activeUsers = totalUsers; // All users from auth system are considered active
 
   const modules = [
     'All Modules',
@@ -362,9 +375,9 @@ export function UserManagement() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Password</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Join Date</TableHead>
+              <TableHead>Phone</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -373,23 +386,16 @@ export function UserManagement() {
               <TableRow key={user.id} className="hover:bg-gray-50 transition-colors duration-200">
                 <TableCell>{user.name}</TableCell>
                 <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                <TableCell className="text-muted-foreground font-mono">
+                  {'•'.repeat(8)}
+                </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-100">
                     {user.role}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  <Badge
-                    variant="secondary"
-                    className={user.status === 'active' 
-                      ? 'bg-[#e8f5e9] text-[#2e7d32] border-[#2e7d32]/20 hover:bg-[#e8f5e9]' 
-                      : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-100'}
-                  >
-                    {user.status}
-                  </Badge>
-                </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {new Date(user.joinDate).toLocaleDateString('en-IN')}
+                  {user.phone || 'N/A'}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex gap-1 justify-end">
@@ -440,7 +446,9 @@ export function UserManagement() {
             fields={[
               { key: 'name', label: 'Name' },
               { key: 'email', label: 'Email', type: 'email' },
+              { key: 'password', label: 'Password', type: 'password' },
               { key: 'role', label: 'Role' },
+              { key: 'phone', label: 'Phone', type: 'tel' },
             ]}
           />
 

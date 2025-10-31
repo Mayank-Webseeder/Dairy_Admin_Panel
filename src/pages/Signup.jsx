@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { slideshowImages } from '../assets/images';
+import { registerUser } from '../lib/auth';
 
 // Import the CSS file
 import '../styles/signup.css';
@@ -7,7 +9,7 @@ import '../styles/signup.css';
 const slidesData = [
   {
     image: slideshowImages[0],
-    title: "Welcome to DairyDash",
+    title: "Welcome to Dynasty Premium",
     subtitle: "Create your account and get started",
     features: [
       { icon: "🛡️", heading: "Secure Registration", description: "Your information is protected with advanced encryption" },
@@ -41,7 +43,7 @@ export function Signup({ onSignup, onNavigate }) {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "user",
+    role: "User",
     username: "",
   });
   const [loading, setLoading] = useState(false);
@@ -73,16 +75,24 @@ export function Signup({ onSignup, onNavigate }) {
       return;
     }
 
-    if (formData.firstName && formData.email && formData.password) {
-      // Simulate API call
-      setTimeout(() => {
-        onSignup();
-        setLoading(false);
-      }, 1000);
-    } else {
+    if (!formData.firstName || !formData.email || !formData.password) {
       setError("Please fill out all required fields.");
       setLoading(false);
+      return;
     }
+
+    // Simulate API call delay
+    setTimeout(() => {
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      const user = registerUser(formData.email, formData.password, fullName, '', formData.role);
+      
+      if (user) {
+        onSignup(user);
+      } else {
+        setError("User with this email already exists.");
+      }
+      setLoading(false);
+    }, 1000);
   };
 
   const currentSlide = slidesData[currentSlideIndex];
@@ -100,10 +110,7 @@ export function Signup({ onSignup, onNavigate }) {
           ))}
           <div className="slideshow-content">
             <div className="logo">
-              <div className="logo-icon">
-                <span>🥛</span>
-              </div>
-              <h1>DairyDash</h1>
+              <h1>Dynasty Premium</h1>
             </div>
             <div className="welcomeMessage">
               <h2 className="slide-title">{currentSlide.title}</h2>
@@ -127,7 +134,7 @@ export function Signup({ onSignup, onNavigate }) {
           <div className="formContent">
             <div className="header">
               <h1>Create Account</h1>
-              <p>Get started with DairyDash today!</p>
+              <p>Get started with Dynasty Premium today!</p>
             </div>
 
             {error && <div className="errorMessage">{error}</div>}
@@ -214,8 +221,8 @@ export function Signup({ onSignup, onNavigate }) {
                   value={formData.role}
                   onChange={handleChange}
                 >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
                 </select>
               </div>
 
@@ -245,7 +252,7 @@ export function Signup({ onSignup, onNavigate }) {
             </div>
 
             <div className="securityFooter">
-              <p>Secured by DairyDash Technology</p>
+              <p>Secured by Dynasty Premium</p>
             </div>
           </div>
         </div>
@@ -253,3 +260,8 @@ export function Signup({ onSignup, onNavigate }) {
     </div>
   );
 }
+
+Signup.propTypes = {
+  onSignup: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func.isRequired,
+};

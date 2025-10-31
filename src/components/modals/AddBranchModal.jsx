@@ -57,9 +57,7 @@ export function AddBranchModal({ open, onOpenChange, onSave }) {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Branch</DialogTitle>
-          <DialogDescription>
-            Enter the branch details below to add a new location to your business.
-          </DialogDescription>
+          <DialogDescription className="sr-only">Add a new branch location</DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-4 mt-4">
